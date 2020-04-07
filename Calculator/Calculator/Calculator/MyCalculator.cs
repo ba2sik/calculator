@@ -34,9 +34,10 @@ namespace Calculator
                 _answer = _parserType.Parse(_userCalculation);
             }
             // TODO: Catch MY exception and print them
-            catch (Exception)
+            catch (Exception e)
             {
-
+                Console.WriteLine("An error occured:");
+                Console.WriteLine(e.Message);
                 throw;
             }
 

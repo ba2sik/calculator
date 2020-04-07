@@ -8,7 +8,8 @@ namespace Calculator.UI.Implementation
         public string GetCalculationFromUser()
         {
             Console.WriteLine("Please Enter Calculation:");
-            return Console.ReadLine();
+            return "-123 + 45* 6";
+            //return Console.ReadLine();
         }
 
         public void DisplayAnswer(double answer)

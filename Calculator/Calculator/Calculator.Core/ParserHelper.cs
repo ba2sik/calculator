@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace Calculator.Core.Helper
+namespace Calculator.Core
 {
     public static class ParserHelper
     {
@@ -14,14 +14,24 @@ namespace Calculator.Core.Helper
             return operators.Contains(ch);
         }
 
-        public static bool isLeftParenthesis(char ch)
+        public static bool IsLeftParenthesis(char ch)
         {
             return ch == '(';
         }
 
-        public static bool isRightParenthesis(char ch)
+        public static bool IsRightParenthesis(char ch)
         {
             return ch == ')';
+        }
+
+        public static string RemoveSpaces(string str)
+        {
+            return str.Replace(" ", "");
+        }
+
+        public static bool IsHyphenMeansNegative(char priorCharacter)
+        {
+            return !IsDigit(priorCharacter);
         }
     }
 }
