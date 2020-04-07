@@ -24,7 +24,7 @@ namespace ParseTests
         }
 
         [TestMethod]
-        public void Expression_1()
+        public void NegativeExpression1()
         {
             // Arrange
             char[] arr = { '-', '1', '2', '*', '3', '4' };
@@ -42,7 +42,7 @@ namespace ParseTests
         }
 
         [TestMethod]
-        public void Expression_2()
+        public void NegativeExpression2()
         {
             // Arrange
             char[] arr = { '-', '1', '2', '-', '-', '4' };
@@ -58,6 +58,25 @@ namespace ParseTests
 
             CollectionAssert.AreEqual(expected, actual);
         }
+
+        [TestMethod]
+        public void DotExpression1()
+        {
+            // Arrange
+            char[] arr = { '-', '1', '2', '.', '3', '+', '5', '.', '6', '6', '6', };
+
+            List<CalculatorToken> expected = new List<CalculatorToken>();
+            expected.Add(new CalculatorToken(TokenTypes.Literal, "-12.3"));
+            expected.Add(new CalculatorToken(TokenTypes.Operator, "+"));
+            expected.Add(new CalculatorToken(TokenTypes.Literal, "5.666"));
+
+            // Act
+            // Assert
+            var actual = CalculatorParser.Tokenize(arr, operators);
+
+            CollectionAssert.AreEqual(expected, actual);
+        }
+
 
         [TestMethod]
         public void OperatorOnFirstCharacter_ShouldThrowArgumentException()

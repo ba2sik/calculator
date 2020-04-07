@@ -12,8 +12,10 @@ namespace Calculator.Core.Implementation
                     this.type == (obj as CalculatorToken).type;
         }
 
+        
         public override int GetHashCode()
         {
+            // Example I found on the internet
             int hash = 13;
             hash = (hash * 7) + value.GetHashCode();
             hash = (hash * 7) + type.GetHashCode();

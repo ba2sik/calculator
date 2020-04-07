@@ -30,11 +30,14 @@ namespace Calculator.Core.Implementation
             var tokens = new List<CalculatorToken>();
             TokenTypes currentTokenType = TokenTypes.Literal;
             CalculatorToken lastToken = null;
+            char currentChar = char.MinValue;
             char lastChar = char.MinValue;
             string currentCharStr = string.Empty;
 
-            foreach (char currentChar in arr)
+            for (int i = 0; i < arr.Length; i++)
             {
+                currentChar = arr[i];
+                
                 currentTokenType = getTokenType(currentChar);
                 currentCharStr = currentChar.ToString();
 
@@ -45,51 +48,51 @@ namespace Calculator.Core.Implementation
                     { 
                         throw new ArgumentException($"The operator {currentChar} is in bad place\n");
                     }
-
-                    lastToken = new CalculatorToken(TokenTypes.Literal, currentCharStr);
-                    tokens.Add(lastToken);
+                    else
+                    {
+                        currentTokenType = TokenTypes.Literal;
+                    }
                 }
                 else
                 {
+                    lastChar = arr[i - 1];
+
                     if (ParserHelper.IsDigit(currentChar))
                     {
                         // checking if the current digit is part of a larger number before it
                         if (lastToken.type == TokenTypes.Literal)
                         {
                             tokens.Last().value += currentCharStr;
-                        }
-                        else
-                        {
-                            lastToken = new CalculatorToken(TokenTypes.Literal, currentCharStr);
-                            tokens.Add(lastToken);
+                            continue;
                         }
                     }
                     else if (currentChar == '-')
                     {
                         if (ParserHelper.IsHyphenMeansNegative(lastChar))
                         {
-                            lastToken = new CalculatorToken(TokenTypes.Literal, currentCharStr);
+                            currentTokenType = TokenTypes.Literal;
+                        }
+                    }
+                    else if (currentChar == '.')
+                    {
+                        if (lastToken.type == TokenTypes.Literal && lastChar != '-')
+                        {
+                            tokens.Last().value += currentCharStr;
+                            continue;
                         }
                         else
                         {
-                            lastToken = new CalculatorToken(TokenTypes.Operator, currentCharStr);
+                            throw new ArgumentException($"The sign . is in bad place\n");
                         }
-
-                        tokens.Add(lastToken);
                     }
-                    else if (ParserHelper.IsOperator(currentChar, operators))
-                    {
-                        lastToken = new CalculatorToken(TokenTypes.Operator, currentCharStr);
-                        tokens.Add(lastToken);
-                    }
-                    else
+                    else if (!ParserHelper.IsOperator(currentChar, operators))
                     {
                         throw new ArgumentException($"Unknown character: {currentChar}\n");
                     }
                 }
 
-                lastToken = tokens.Last();
-                lastChar = currentChar;
+                lastToken = new CalculatorToken(currentTokenType, currentCharStr);
+                tokens.Add(lastToken);
             }
 
             return tokens;
