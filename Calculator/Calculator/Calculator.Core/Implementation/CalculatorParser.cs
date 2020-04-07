@@ -2,11 +2,11 @@
 
 namespace Calculator.Core.Implementation
 {
-    class CalculatorParser : IParser
+    public class CalculatorParser : IParser
     {
-        public float Parse(string str)
+        public double Parse(string str)
         {
-            throw new System.NotImplementedException();
+            return 6.666;
         }
     }
 }

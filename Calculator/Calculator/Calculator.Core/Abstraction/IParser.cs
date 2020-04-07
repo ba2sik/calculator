@@ -1,7 +1,7 @@
 ﻿namespace Calculator.Core.Abstraction
 {
-    interface IParser
+    public interface IParser
     {
-        float Parse(string str);
+        double Parse(string str);
     }
 }
