@@ -42,8 +42,7 @@ namespace Calculator.Core.Implementation
             {
                 HandleOperator(ch, tokens);
             }
-            else if(ParserHelper.IsLeftParenthesis(ch) || 
-                    ParserHelper.IsRightParenthesis(ch))
+            else if (ParserHelper.IsParenthesis(ch))
             {
                 HandleParentheses(ch, tokens);
             }
@@ -55,18 +54,18 @@ namespace Calculator.Core.Implementation
 
         private static CalculatorToken CreateFirstToken(char ch)
         {
-            // checking if there's another operator than hyphen
-            if (getTokenType(ch) == TokenTypes.Operator && ch != '-')
+            if (!ParserHelper.IsFirstCharacterValid(ch))
             {
                 throw new ArgumentException($"The operator {ch} is in bad place\n");
             }
 
-            return CreateToken(TokenTypes.Literal, ch);
+            return CreateToken(TokenTypes.ValidFirstCharacter, ch);
         }
 
         private static void HandleDigit(char digit, List<CalculatorToken> tokens)
         {
-            if (tokens.Last().type == TokenTypes.Literal)
+            // AND in case its type is involving multiple types
+            if ((tokens.Last().type & TokenTypes.Literal) == TokenTypes.Literal)
             {
                 ConcatToLastToken(digit, tokens);
             }
@@ -94,7 +93,7 @@ namespace Calculator.Core.Implementation
 
         private static void HandleDot(List<CalculatorToken> tokens)
         {
-            if (getLastTokenType(tokens) != TokenTypes.Literal)
+            if ((getLastTokenType(tokens) & TokenTypes.Literal) == 0)
             {
                 throw new ArgumentException($"The sign . is in bad place\n");
             }
@@ -110,7 +109,7 @@ namespace Calculator.Core.Implementation
 
         private static void HandleOperator(char op, List<CalculatorToken> tokens)
         {
-            if (getLastTokenType(tokens) == TokenTypes.Operator)
+            if (!(getLastTokenType(tokens) == TokenTypes.ValidTypeBeforeOperator))
             {
                 throw new ArgumentException($"You can't put two operators in a row (except '-')\n");
             }

@@ -30,7 +30,7 @@ namespace ParseTests
             char[] arr = { '-', '1', '2', '*', '3', '4' };
 
             List<CalculatorToken> expected = new List<CalculatorToken>();
-            expected.Add(new CalculatorToken(TokenTypes.Literal, "-12"));
+            expected.Add(new CalculatorToken(TokenTypes.ValidFirstCharacter, "-12"));
             expected.Add(new CalculatorToken(TokenTypes.Operator, "*"));
             expected.Add(new CalculatorToken(TokenTypes.Literal, "34"));
 
@@ -48,7 +48,7 @@ namespace ParseTests
             char[] arr = { '-', '1', '2', '-', '-', '4' };
 
             List<CalculatorToken> expected = new List<CalculatorToken>();
-            expected.Add(new CalculatorToken(TokenTypes.Literal, "-12"));
+            expected.Add(new CalculatorToken(TokenTypes.ValidFirstCharacter, "-12"));
             expected.Add(new CalculatorToken(TokenTypes.Operator, "-"));
             expected.Add(new CalculatorToken(TokenTypes.Literal, "-4"));
 
@@ -66,7 +66,7 @@ namespace ParseTests
             char[] arr = { '-', '1', '2', '.', '3', '+', '5', '.', '6', '6', '6', };
 
             List<CalculatorToken> expected = new List<CalculatorToken>();
-            expected.Add(new CalculatorToken(TokenTypes.Literal, "-12.3"));
+            expected.Add(new CalculatorToken(TokenTypes.ValidFirstCharacter, "-12.3"));
             expected.Add(new CalculatorToken(TokenTypes.Operator, "+"));
             expected.Add(new CalculatorToken(TokenTypes.Literal, "5.666"));
 
@@ -82,12 +82,16 @@ namespace ParseTests
         public void ParenthesisExpression1()
         {
             // Arrange
-            char[] arr = { '1', '+', '2', '*', '(', '3', '+', '4', ')'};
+            char[] arr = { '1', '+', '(', '2', '*', '3', ')'};
             
             List<CalculatorToken> expected = new List<CalculatorToken>();
-            expected.Add(new CalculatorToken(TokenTypes.Literal, "1"));
+            expected.Add(new CalculatorToken(TokenTypes.ValidFirstCharacter, "1"));
             expected.Add(new CalculatorToken(TokenTypes.Operator, "+"));
-            expected.Add(new CalculatorToken(TokenTypes.Literal, "5.666"));
+            expected.Add(new CalculatorToken(TokenTypes.Parenthesis, "("));
+            expected.Add(new CalculatorToken(TokenTypes.Literal, "2"));
+            expected.Add(new CalculatorToken(TokenTypes.Operator, "*"));
+            expected.Add(new CalculatorToken(TokenTypes.Literal, "3"));
+            expected.Add(new CalculatorToken(TokenTypes.Parenthesis, ")"));
 
             // Act
             // Assert
@@ -134,8 +138,5 @@ namespace ParseTests
                     Tokenizer.Tokenize(arr, operators));
 
         }
-
-
-        
     }
 }

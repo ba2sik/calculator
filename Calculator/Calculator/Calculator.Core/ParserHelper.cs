@@ -24,6 +24,11 @@ namespace Calculator.Core
             return ch == ')';
         }
 
+        public static bool IsParenthesis(char ch)
+        {
+            return IsLeftParenthesis(ch) || IsRightParenthesis(ch);
+        }
+
         public static bool IsHyphen(char ch)
         {
             return ch == '-';
@@ -42,6 +47,11 @@ namespace Calculator.Core
         public static bool IsHyphenMeansNegative(char priorCharacter)
         {
             return !IsDigit(priorCharacter);
+        }
+
+        public static bool IsFirstCharacterValid(char ch)
+        {
+            return IsDigit(ch) || IsHyphen(ch) || IsParenthesis(ch);
         }
     }
 }
