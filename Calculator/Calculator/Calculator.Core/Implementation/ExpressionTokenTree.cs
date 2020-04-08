@@ -4,6 +4,10 @@
     {
         public TokenTreeNode Root { get; set; }
 
+        public double EvalTree()
+        {
+            return 5.555;
+        }
 
     }
 }

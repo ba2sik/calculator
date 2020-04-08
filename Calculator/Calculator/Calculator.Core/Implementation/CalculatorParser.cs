@@ -18,90 +18,23 @@ namespace Calculator.Core.Implementation
         {
             exp = ParserHelper.RemoveSpaces(exp);
             char[] expArr = exp.ToCharArray();
-            List<CalculatorToken> tokens = Tokenize(expArr,_operators);
-            
-            System.Console.WriteLine(exp);
+            List<CalculatorToken> tokens = Tokenizer.Tokenize(expArr, _operators);
 
-            return 6.666;
+            Console.WriteLine(expArr);
+            tokens.ForEach(t => Console.WriteLine(t.value));
+
+            var expTree = CreateExpressionTree(tokens);
+            double result = expTree.EvalTree();
+
+            return result;
         }
-      
-        public static List<CalculatorToken> Tokenize(char[] arr,char[] operators)
+
+        // TODO
+        private ExpressionTokenTree CreateExpressionTree(List<CalculatorToken> tokens)
         {
-            var tokens = new List<CalculatorToken>();
-            TokenTypes currentTokenType = TokenTypes.Literal;
-            CalculatorToken lastToken = null;
-            char currentChar = char.MinValue;
-            char lastChar = char.MinValue;
-            string currentCharStr = string.Empty;
+            var tree = new ExpressionTokenTree();
 
-            for (int i = 0; i < arr.Length; i++)
-            {
-                currentChar = arr[i];
-                
-                currentTokenType = getTokenType(currentChar);
-                currentCharStr = currentChar.ToString();
-
-                if (!tokens.Any())
-                {
-                    // checking if there's another operator than hyphen
-                    if (currentTokenType == TokenTypes.Operator && currentChar != '-')
-                    { 
-                        throw new ArgumentException($"The operator {currentChar} is in bad place\n");
-                    }
-                    else
-                    {
-                        currentTokenType = TokenTypes.Literal;
-                    }
-                }
-                else
-                {
-                    lastChar = arr[i - 1];
-
-                    if (ParserHelper.IsDigit(currentChar))
-                    {
-                        // checking if the current digit is part of a larger number before it
-                        if (lastToken.type == TokenTypes.Literal)
-                        {
-                            tokens.Last().value += currentCharStr;
-                            continue;
-                        }
-                    }
-                    else if (currentChar == '-')
-                    {
-                        if (ParserHelper.IsHyphenMeansNegative(lastChar))
-                        {
-                            currentTokenType = TokenTypes.Literal;
-                        }
-                    }
-                    else if (currentChar == '.')
-                    {
-                        if (lastToken.type == TokenTypes.Literal && lastChar != '-')
-                        {
-                            tokens.Last().value += currentCharStr;
-                            continue;
-                        }
-                        else
-                        {
-                            throw new ArgumentException($"The sign . is in bad place\n");
-                        }
-                    }
-                    else if (!ParserHelper.IsOperator(currentChar, operators))
-                    {
-                        throw new ArgumentException($"Unknown character: {currentChar}\n");
-                    }
-                }
-
-                lastToken = new CalculatorToken(currentTokenType, currentCharStr);
-                tokens.Add(lastToken);
-            }
-
-            return tokens;
+            return tree;
         }
-
-        private static TokenTypes getTokenType(char c)
-        {
-            return ParserHelper.IsDigit(c) ? TokenTypes.Literal : TokenTypes.Operator;
-        }
-
     }
 }

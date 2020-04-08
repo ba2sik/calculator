@@ -3,6 +3,7 @@
     public enum TokenTypes
     {
         Literal,
-        Operator
+        Operator,
+        Parenthesis
     }
 }

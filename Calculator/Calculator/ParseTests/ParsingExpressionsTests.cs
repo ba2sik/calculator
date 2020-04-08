@@ -36,7 +36,7 @@ namespace ParseTests
 
             // Act
             // Assert
-            var actual = CalculatorParser.Tokenize(arr, operators);
+            var actual = Tokenizer.Tokenize(arr, operators);
 
             CollectionAssert.AreEqual(expected, actual);
         }
@@ -54,7 +54,7 @@ namespace ParseTests
 
             // Act
             // Assert
-            var actual = CalculatorParser.Tokenize(arr, operators);
+            var actual = Tokenizer.Tokenize(arr, operators);
 
             CollectionAssert.AreEqual(expected, actual);
         }
@@ -72,11 +72,55 @@ namespace ParseTests
 
             // Act
             // Assert
-            var actual = CalculatorParser.Tokenize(arr, operators);
+            var actual = Tokenizer.Tokenize(arr, operators);
 
             CollectionAssert.AreEqual(expected, actual);
         }
 
+        // TODO
+        [TestMethod]
+        public void ParenthesisExpression1()
+        {
+            // Arrange
+            char[] arr = { '1', '+', '2', '*', '(', '3', '+', '4', ')'};
+            
+            List<CalculatorToken> expected = new List<CalculatorToken>();
+            expected.Add(new CalculatorToken(TokenTypes.Literal, "1"));
+            expected.Add(new CalculatorToken(TokenTypes.Operator, "+"));
+            expected.Add(new CalculatorToken(TokenTypes.Literal, "5.666"));
+
+            // Act
+            // Assert
+            var actual = Tokenizer.Tokenize(arr, operators);
+
+            CollectionAssert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void DotOnFirstCharacter_ShouldThrowArgumentException()
+        {
+            // Arrange
+            char[] arr = { '.', '1', '2', '*', '3', '4' };
+
+            // Act
+            // Assert
+            Assert.ThrowsException<System.ArgumentException>(() =>
+                    Tokenizer.Tokenize(arr, operators));
+
+        }
+
+        [TestMethod]
+        public void TwoOperatorsInARow_ShouldThrowArgumentException()
+        {
+            // Arrange
+            char[] arr = { '.', '1', '2', '*', '*', '4' };
+
+            // Act
+            // Assert
+            Assert.ThrowsException<System.ArgumentException>(() =>
+                    Tokenizer.Tokenize(arr, operators));
+
+        }
 
         [TestMethod]
         public void OperatorOnFirstCharacter_ShouldThrowArgumentException()
@@ -87,23 +131,11 @@ namespace ParseTests
             // Act
             // Assert
             Assert.ThrowsException<System.ArgumentException>(() =>
-                    CalculatorParser.Tokenize(arr, operators));
+                    Tokenizer.Tokenize(arr, operators));
 
         }
 
 
-        //[TestMethod]
-        //public void Expression_0()
-        //{
-        //    // Arrange
-        //    double expected = 615;
-        //    string exp = "123 * 5";
-        //    CalculatorParser parser = new CalculatorParser(operators);
-
-        //    // Act
-        //    // Assert
-        //    double actual = parser.Parse(exp);
-        //    Assert.AreEqual(expected, actual, 0, "Wrong answer");
-        //}
+        
     }
 }

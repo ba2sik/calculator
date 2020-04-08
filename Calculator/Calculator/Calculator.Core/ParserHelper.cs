@@ -24,6 +24,16 @@ namespace Calculator.Core
             return ch == ')';
         }
 
+        public static bool IsHyphen(char ch)
+        {
+            return ch == '-';
+        }
+
+        public static bool IsDot(char ch)
+        {
+            return ch == '.';
+        }
+
         public static string RemoveSpaces(string str)
         {
             return str.Replace(" ", "");

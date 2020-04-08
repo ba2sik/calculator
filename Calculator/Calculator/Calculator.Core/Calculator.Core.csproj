@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="Abstraction\IParser.cs" />
     <Compile Include="Abstraction\Token.cs" />
+    <Compile Include="Implementation\Tokenizer.cs" />
     <Compile Include="ParserHelper.cs" />
     <Compile Include="Implementation\CalculatorParser.cs" />
     <Compile Include="Implementation\CalculatorToken.cs" />
