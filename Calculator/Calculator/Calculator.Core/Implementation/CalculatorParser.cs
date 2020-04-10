@@ -18,7 +18,7 @@ namespace Calculator.Core.Implementation
         {
             exp = ParserHelper.RemoveSpaces(exp);
             char[] expArr = exp.ToCharArray();
-            List<CalculatorToken> tokens = Tokenizer.Tokenize(expArr, _operators);
+            List<Token> tokens = Tokenizer.Tokenize(expArr, _operators);
 
             Console.WriteLine(expArr);
             tokens.ForEach(t => Console.WriteLine(t.value));
@@ -30,7 +30,7 @@ namespace Calculator.Core.Implementation
         }
 
         // TODO
-        private ExpressionTokenTree CreateExpressionTree(List<CalculatorToken> tokens)
+        private ExpressionTokenTree CreateExpressionTree(List<Token> tokens)
         {
             var tree = new ExpressionTokenTree();
 

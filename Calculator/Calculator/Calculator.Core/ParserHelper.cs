@@ -14,20 +14,22 @@ namespace Calculator.Core
             return operators.Contains(ch);
         }
 
-        public static bool IsLeftParenthesis(char ch)
-        {
-            return ch == '(';
-        }
-
-        public static bool IsRightParenthesis(char ch)
-        {
-            return ch == ')';
-        }
-
         public static bool IsParenthesis(char ch)
         {
             return IsLeftParenthesis(ch) || IsRightParenthesis(ch);
         }
+
+        private static bool IsLeftParenthesis(char ch)
+        {
+            return ch == '(';
+        }
+
+        private static bool IsRightParenthesis(char ch)
+        {
+            return ch == ')';
+        }
+
+
 
         public static bool IsHyphen(char ch)
         {

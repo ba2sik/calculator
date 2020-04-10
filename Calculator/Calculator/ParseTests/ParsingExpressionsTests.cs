@@ -138,5 +138,34 @@ namespace ParseTests
                     Tokenizer.Tokenize(arr, operators));
 
         }
+
+        [TestMethod]
+        public void HyphenMeansNegative()
+        {
+            // Arrange
+            char c = '*';
+            bool expected = true;
+
+            // Assert
+            bool actual = ParserHelper.IsHyphenMeansNegative(c);
+
+            Assert.AreEqual(expected, actual);
+
+        }
+
+        [TestMethod]
+        public void HyphenMeansSubtraction()
+        {
+            // Arrange
+            char c = '8';
+            bool expected = false;
+
+            // Assert
+            bool actual = ParserHelper.IsHyphenMeansNegative(c);
+
+            Assert.AreEqual(expected, actual);
+
+        }
     }
 }
+צ

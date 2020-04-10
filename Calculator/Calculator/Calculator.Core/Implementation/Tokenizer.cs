@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Calculator.Core.Abstraction;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,11 +10,11 @@ namespace Calculator.Core.Implementation
     public static class Tokenizer
     {
         // TODO: switch to private after unit testing
-        public static List<CalculatorToken> Tokenize(char[] arr, char[] operators)
+        public static List<Token> Tokenize(char[] arr, char[] operators)
         {
             // The first char in expression has special rules
             var firstToken = CreateFirstToken(arr[0]);
-            var tokens = new List<CalculatorToken>() { firstToken };
+            var tokens = new List<Token>() { firstToken };
 
             // Skipping the first char
             foreach (var currentChar in arr.Skip(1))
@@ -24,7 +25,7 @@ namespace Calculator.Core.Implementation
             return tokens;
         }
 
-        private static void HandleCharacter(char ch, char[] operators, List<CalculatorToken> tokens)
+        private static void HandleCharacter(char ch, char[] operators, List<Token> tokens)
         {
             if (ParserHelper.IsHyphen(ch))
             {
@@ -52,7 +53,7 @@ namespace Calculator.Core.Implementation
             }
         }
 
-        private static CalculatorToken CreateFirstToken(char ch)
+        private static Token CreateFirstToken(char ch)
         {
             if (!ParserHelper.IsFirstCharacterValid(ch))
             {
@@ -62,7 +63,7 @@ namespace Calculator.Core.Implementation
             return CreateToken(TokenTypes.ValidFirstCharacter, ch);
         }
 
-        private static void HandleDigit(char digit, List<CalculatorToken> tokens)
+        private static void HandleDigit(char digit, List<Token> tokens)
         {
             // AND in case its type is involving multiple types
             if ((tokens.Last().type & TokenTypes.Literal) == TokenTypes.Literal)
@@ -76,7 +77,7 @@ namespace Calculator.Core.Implementation
             }
         }
 
-        private static void HandleHyphen(List<CalculatorToken> tokens)
+        private static void HandleHyphen(List<Token> tokens)
         {
             // get last character at the last token's value
             char lastChar = tokens.Last().value.Last();
@@ -91,9 +92,9 @@ namespace Calculator.Core.Implementation
             tokens.Add(token);
         }
 
-        private static void HandleDot(List<CalculatorToken> tokens)
+        private static void HandleDot(List<Token> tokens)
         {
-            if ((getLastTokenType(tokens) & TokenTypes.Literal) == 0)
+            if ((TokenTypes.Literal & getLastTokenType(tokens)) == 0)
             {
                 throw new ArgumentException($"The sign . is in bad place\n");
             }
@@ -101,15 +102,15 @@ namespace Calculator.Core.Implementation
             ConcatToLastToken('.', tokens);
         }
 
-        private static void HandleParentheses(char ch, List<CalculatorToken> tokens)
+        private static void HandleParentheses(char ch, List<Token> tokens)
         {
             var token = CreateToken(TokenTypes.Parenthesis, ch);
             tokens.Add(token);
         }
 
-        private static void HandleOperator(char op, List<CalculatorToken> tokens)
+        private static void HandleOperator(char op, List<Token> tokens)
         {
-            if (!(getLastTokenType(tokens) == TokenTypes.ValidTypeBeforeOperator))
+            if ((TokenTypes.ValidTypeBeforeOperator & getLastTokenType(tokens)) == 0)
             {
                 throw new ArgumentException($"You can't put two operators in a row (except '-')\n");
             }
@@ -118,17 +119,17 @@ namespace Calculator.Core.Implementation
             tokens.Add(token);
         }
 
-        private static CalculatorToken CreateToken(TokenTypes type, char value)
+        private static Token CreateToken(TokenTypes type, char value)
         {
             return new CalculatorToken(type, value.ToString());
         }
 
-        private static void ConcatToLastToken(char ch, List<CalculatorToken> tokens)
+        private static void ConcatToLastToken(char ch, List<Token> tokens)
         {
             tokens.Last().value += ch.ToString();
         }
 
-        private static TokenTypes getLastTokenType(List<CalculatorToken> tokens)
+        private static TokenTypes getLastTokenType(List<Token> tokens)
         {
             return tokens.Last().type;
 

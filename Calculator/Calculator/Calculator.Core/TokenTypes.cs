@@ -1,6 +1,6 @@
 ﻿namespace Calculator.Core
 {
-    public enum TokenTypes
+    public enum TokenTypes : uint
     {
         Literal = 1,
         Operator = 2,
