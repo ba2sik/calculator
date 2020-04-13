@@ -10,7 +10,7 @@ namespace ParseTests
     public class ParsingExpressionsTests
     {
         public static readonly char[] operators = { '+', '-', '*', '/', '^' };
-        
+
         private TestContext testContextInstance;
 
         /// <summary>
@@ -27,18 +27,17 @@ namespace ParseTests
         public void NegativeExpression1()
         {
             // Arrange
-            char[] arr = { '-', '1', '2', '*', '3', '4' };
+            string str = "-12*34";
             CalculatorTokenizer tokenizer = new CalculatorTokenizer(operators);
 
-
-        List<CalculatorToken> expected = new List<CalculatorToken>();
+            List<CalculatorToken> expected = new List<CalculatorToken>();
             expected.Add(new CalculatorToken(TokenTypes.ValidFirstCharacter, "-12"));
             expected.Add(new CalculatorToken(TokenTypes.Operator, "*"));
             expected.Add(new CalculatorToken(TokenTypes.Literal, "34"));
 
             // Act
             // Assert
-            var actual = tokenizer.Tokenize(arr);
+            var actual = tokenizer.Tokenize(str);
 
             CollectionAssert.AreEqual(expected, actual);
         }
@@ -47,7 +46,8 @@ namespace ParseTests
         public void NegativeExpression2()
         {
             // Arrange
-            char[] arr = { '-', '1', '2', '-', '-', '4' };
+            string str = "-12--4";
+
             CalculatorTokenizer tokenizer = new CalculatorTokenizer(operators);
 
             List<CalculatorToken> expected = new List<CalculatorToken>();
@@ -57,7 +57,7 @@ namespace ParseTests
 
             // Act
             // Assert
-            var actual = tokenizer.Tokenize(arr);
+            var actual = tokenizer.Tokenize(str);
 
             CollectionAssert.AreEqual(expected, actual);
         }
@@ -66,7 +66,7 @@ namespace ParseTests
         public void DotExpression1()
         {
             // Arrange
-            char[] arr = { '-', '1', '2', '.', '3', '+', '5', '.', '6', '6', '6', };
+            string str = "-12.3+5.666";
             CalculatorTokenizer tokenizer = new CalculatorTokenizer(operators);
 
             List<CalculatorToken> expected = new List<CalculatorToken>();
@@ -76,7 +76,7 @@ namespace ParseTests
 
             // Act
             // Assert
-            var actual = tokenizer.Tokenize(arr);
+            var actual = tokenizer.Tokenize(str);
 
             CollectionAssert.AreEqual(expected, actual);
         }
@@ -86,7 +86,7 @@ namespace ParseTests
         public void ParenthesisExpression1()
         {
             // Arrange
-            char[] arr = { '1', '+', '(', '2', '*', '3', ')'};
+            string str = "1+(2*3)";
             CalculatorTokenizer tokenizer = new CalculatorTokenizer(operators);
 
             List<CalculatorToken> expected = new List<CalculatorToken>();
@@ -100,7 +100,7 @@ namespace ParseTests
 
             // Act
             // Assert
-            var actual = tokenizer.Tokenize(arr);
+            var actual = tokenizer.Tokenize(str);
 
             CollectionAssert.AreEqual(expected, actual);
         }
@@ -109,42 +109,40 @@ namespace ParseTests
         public void DotOnFirstCharacter_ShouldThrowArgumentException()
         {
             // Arrange
-            char[] arr = { '.', '1', '2', '*', '3', '4' };
+            string str = ".12*34";
+
             CalculatorTokenizer tokenizer = new CalculatorTokenizer(operators);
 
             // Act
             // Assert
             Assert.ThrowsException<System.ArgumentException>(() =>
-                    tokenizer.Tokenize(arr));
-
+                    tokenizer.Tokenize(str));
         }
 
         [TestMethod]
         public void TwoOperatorsInARow_ShouldThrowArgumentException()
         {
             // Arrange
-            char[] arr = { '.', '1', '2', '*', '*', '4' };
+            string str = ".12**4";
             CalculatorTokenizer tokenizer = new CalculatorTokenizer(operators);
 
             // Act
             // Assert
             Assert.ThrowsException<System.ArgumentException>(() =>
-                    tokenizer.Tokenize(arr));
-
+                    tokenizer.Tokenize(str));
         }
 
         [TestMethod]
         public void OperatorOnFirstCharacter_ShouldThrowArgumentException()
         {
             // Arrange
-            char[] arr = { '*', '1', '2', '*', '3', '4' };
+            string str = "*12*34";
             CalculatorTokenizer tokenizer = new CalculatorTokenizer(operators);
 
             // Act
             // Assert
             Assert.ThrowsException<System.ArgumentException>(() =>
-                    tokenizer.Tokenize(arr));
-
+                    tokenizer.Tokenize(str));
         }
 
         [TestMethod]
@@ -158,7 +156,6 @@ namespace ParseTests
             bool actual = ParserHelper.IsHyphenMeansNegative(c);
 
             Assert.AreEqual(expected, actual);
-
         }
 
         [TestMethod]
@@ -172,7 +169,6 @@ namespace ParseTests
             bool actual = ParserHelper.IsHyphenMeansNegative(c);
 
             Assert.AreEqual(expected, actual);
-
         }
     }
 }

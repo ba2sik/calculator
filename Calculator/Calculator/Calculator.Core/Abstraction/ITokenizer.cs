@@ -8,6 +8,6 @@ namespace Calculator.Core.Abstraction
 {
     public interface ITokenizer
     {
-        List<Token> Tokenize(char[] arr);
+        List<Token> Tokenize(string expression);
     }
 }

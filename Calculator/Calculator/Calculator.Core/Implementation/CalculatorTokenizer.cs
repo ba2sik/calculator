@@ -14,14 +14,17 @@ namespace Calculator.Core.Implementation
             _operators = operators;
         }
 
-        public List<Token> Tokenize(char[] arr)
+        public List<Token> Tokenize(string expression)
         {
+            string cleanExpression = ParserHelper.RemoveSpaces(expression);
+            char[] expArr = cleanExpression.ToCharArray();
+
             // The first char in expression has special rules
-            var firstToken = CreateFirstToken(arr[0]);
+            var firstToken = CreateFirstToken(expArr[0]);
             var tokens = new List<Token>() { firstToken };
 
             // Skipping the first char
-            foreach (var currentChar in arr.Skip(1))
+            foreach (var currentChar in expArr.Skip(1))
             {
                 HandleCharacter(currentChar, _operators, tokens);
             }

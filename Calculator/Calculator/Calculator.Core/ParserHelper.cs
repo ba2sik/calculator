@@ -46,6 +46,7 @@ namespace Calculator.Core
 
         public static bool IsHyphenMeansNegative(char priorCharacter)
         {
+            // When hyphen is after number, it means subtraction. Else - negation
             return !IsDigit(priorCharacter);
         }
 

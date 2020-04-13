@@ -7,7 +7,7 @@ namespace Calculator.Core.Implementation
 {
     public class CalculatorParser : IParser
     {
-        private ITokenizer _tokenizer;
+        private readonly ITokenizer _tokenizer;
 
         public CalculatorParser(char[] operators)
         {
@@ -16,25 +16,26 @@ namespace Calculator.Core.Implementation
 
         public double Parse(string expression)
         {
-            string cleanExpression = ParserHelper.RemoveSpaces(expression);
-            char[] expArr = cleanExpression.ToCharArray();
-            List<Token> tokens = _tokenizer.Tokenize(expArr);
+            List<Token> tokens = _tokenizer.Tokenize(expression);
+            Stack<Token> postfixNotationTokens = GetPostfixNotation(tokens);
+            double result = EvalPostfixExpression(postfixNotationTokens);
 
-            Console.WriteLine(cleanExpression);
+            Console.WriteLine(expression);
             tokens.ForEach(t => Console.WriteLine(t.value));
 
-            var expTree = CreateExpressionTree(tokens);
-            double result = expTree.EvalTree();
 
             return result;
         }
 
-        // TODO
-        private ExpressionTokenTree CreateExpressionTree(List<Token> tokens)
+        private Stack<Token> GetPostfixNotation(List<Token> tokens)
         {
-            var tree = new ExpressionTokenTree();
+            return new Stack<Token>(tokens);
+        }
+        
+        private double EvalPostfixExpression(Stack<Token> tokens)
+        {
 
-            return tree;
+            return 6.666;
         }
     }
 }
