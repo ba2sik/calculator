@@ -7,20 +7,20 @@ namespace Calculator.Core.Implementation
 {
     public class CalculatorParser : IParser
     {
-        private readonly char[] _operators;
+        private ITokenizer _tokenizer;
 
         public CalculatorParser(char[] operators)
         {
-            _operators = operators;
+            _tokenizer = new CalculatorTokenizer(operators);
         }
 
-        public double Parse(string exp)
+        public double Parse(string expression)
         {
-            exp = ParserHelper.RemoveSpaces(exp);
-            char[] expArr = exp.ToCharArray();
-            List<Token> tokens = Tokenizer.Tokenize(expArr, _operators);
+            string cleanExpression = ParserHelper.RemoveSpaces(expression);
+            char[] expArr = cleanExpression.ToCharArray();
+            List<Token> tokens = _tokenizer.Tokenize(expArr);
 
-            Console.WriteLine(expArr);
+            Console.WriteLine(cleanExpression);
             tokens.ForEach(t => Console.WriteLine(t.value));
 
             var expTree = CreateExpressionTree(tokens);

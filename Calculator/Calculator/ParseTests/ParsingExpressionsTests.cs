@@ -10,7 +10,7 @@ namespace ParseTests
     public class ParsingExpressionsTests
     {
         public static readonly char[] operators = { '+', '-', '*', '/', '^' };
-
+        
         private TestContext testContextInstance;
 
         /// <summary>
@@ -28,15 +28,17 @@ namespace ParseTests
         {
             // Arrange
             char[] arr = { '-', '1', '2', '*', '3', '4' };
+            CalculatorTokenizer tokenizer = new CalculatorTokenizer(operators);
 
-            List<CalculatorToken> expected = new List<CalculatorToken>();
+
+        List<CalculatorToken> expected = new List<CalculatorToken>();
             expected.Add(new CalculatorToken(TokenTypes.ValidFirstCharacter, "-12"));
             expected.Add(new CalculatorToken(TokenTypes.Operator, "*"));
             expected.Add(new CalculatorToken(TokenTypes.Literal, "34"));
 
             // Act
             // Assert
-            var actual = Tokenizer.Tokenize(arr, operators);
+            var actual = tokenizer.Tokenize(arr);
 
             CollectionAssert.AreEqual(expected, actual);
         }
@@ -46,6 +48,7 @@ namespace ParseTests
         {
             // Arrange
             char[] arr = { '-', '1', '2', '-', '-', '4' };
+            CalculatorTokenizer tokenizer = new CalculatorTokenizer(operators);
 
             List<CalculatorToken> expected = new List<CalculatorToken>();
             expected.Add(new CalculatorToken(TokenTypes.ValidFirstCharacter, "-12"));
@@ -54,7 +57,7 @@ namespace ParseTests
 
             // Act
             // Assert
-            var actual = Tokenizer.Tokenize(arr, operators);
+            var actual = tokenizer.Tokenize(arr);
 
             CollectionAssert.AreEqual(expected, actual);
         }
@@ -64,6 +67,7 @@ namespace ParseTests
         {
             // Arrange
             char[] arr = { '-', '1', '2', '.', '3', '+', '5', '.', '6', '6', '6', };
+            CalculatorTokenizer tokenizer = new CalculatorTokenizer(operators);
 
             List<CalculatorToken> expected = new List<CalculatorToken>();
             expected.Add(new CalculatorToken(TokenTypes.ValidFirstCharacter, "-12.3"));
@@ -72,7 +76,7 @@ namespace ParseTests
 
             // Act
             // Assert
-            var actual = Tokenizer.Tokenize(arr, operators);
+            var actual = tokenizer.Tokenize(arr);
 
             CollectionAssert.AreEqual(expected, actual);
         }
@@ -83,7 +87,8 @@ namespace ParseTests
         {
             // Arrange
             char[] arr = { '1', '+', '(', '2', '*', '3', ')'};
-            
+            CalculatorTokenizer tokenizer = new CalculatorTokenizer(operators);
+
             List<CalculatorToken> expected = new List<CalculatorToken>();
             expected.Add(new CalculatorToken(TokenTypes.ValidFirstCharacter, "1"));
             expected.Add(new CalculatorToken(TokenTypes.Operator, "+"));
@@ -95,7 +100,7 @@ namespace ParseTests
 
             // Act
             // Assert
-            var actual = Tokenizer.Tokenize(arr, operators);
+            var actual = tokenizer.Tokenize(arr);
 
             CollectionAssert.AreEqual(expected, actual);
         }
@@ -105,11 +110,12 @@ namespace ParseTests
         {
             // Arrange
             char[] arr = { '.', '1', '2', '*', '3', '4' };
+            CalculatorTokenizer tokenizer = new CalculatorTokenizer(operators);
 
             // Act
             // Assert
             Assert.ThrowsException<System.ArgumentException>(() =>
-                    Tokenizer.Tokenize(arr, operators));
+                    tokenizer.Tokenize(arr));
 
         }
 
@@ -118,11 +124,12 @@ namespace ParseTests
         {
             // Arrange
             char[] arr = { '.', '1', '2', '*', '*', '4' };
+            CalculatorTokenizer tokenizer = new CalculatorTokenizer(operators);
 
             // Act
             // Assert
             Assert.ThrowsException<System.ArgumentException>(() =>
-                    Tokenizer.Tokenize(arr, operators));
+                    tokenizer.Tokenize(arr));
 
         }
 
@@ -131,11 +138,12 @@ namespace ParseTests
         {
             // Arrange
             char[] arr = { '*', '1', '2', '*', '3', '4' };
+            CalculatorTokenizer tokenizer = new CalculatorTokenizer(operators);
 
             // Act
             // Assert
             Assert.ThrowsException<System.ArgumentException>(() =>
-                    Tokenizer.Tokenize(arr, operators));
+                    tokenizer.Tokenize(arr));
 
         }
 
@@ -168,4 +176,3 @@ namespace ParseTests
         }
     }
 }
-צ

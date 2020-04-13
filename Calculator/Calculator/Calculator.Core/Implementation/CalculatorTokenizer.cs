@@ -2,15 +2,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Calculator.Core.Implementation
 {
-    public static class Tokenizer
+    public class CalculatorTokenizer : ITokenizer
     {
-        // TODO: switch to private after unit testing
-        public static List<Token> Tokenize(char[] arr, char[] operators)
+        private char[] _operators = null;
+
+        public CalculatorTokenizer(char[] operators)
+        {
+            _operators = operators;
+        }
+
+        public List<Token> Tokenize(char[] arr)
         {
             // The first char in expression has special rules
             var firstToken = CreateFirstToken(arr[0]);
@@ -19,13 +23,13 @@ namespace Calculator.Core.Implementation
             // Skipping the first char
             foreach (var currentChar in arr.Skip(1))
             {
-                HandleCharacter(currentChar, operators, tokens);
+                HandleCharacter(currentChar, _operators, tokens);
             }
 
             return tokens;
         }
 
-        private static void HandleCharacter(char ch, char[] operators, List<Token> tokens)
+        private void HandleCharacter(char ch, char[] operators, List<Token> tokens)
         {
             if (ParserHelper.IsHyphen(ch))
             {
@@ -53,7 +57,7 @@ namespace Calculator.Core.Implementation
             }
         }
 
-        private static Token CreateFirstToken(char ch)
+        private Token CreateFirstToken(char ch)
         {
             if (!ParserHelper.IsFirstCharacterValid(ch))
             {
@@ -63,7 +67,7 @@ namespace Calculator.Core.Implementation
             return CreateToken(TokenTypes.ValidFirstCharacter, ch);
         }
 
-        private static void HandleDigit(char digit, List<Token> tokens)
+        private void HandleDigit(char digit, List<Token> tokens)
         {
             // AND in case its type is involving multiple types
             if ((tokens.Last().type & TokenTypes.Literal) == TokenTypes.Literal)
@@ -77,7 +81,7 @@ namespace Calculator.Core.Implementation
             }
         }
 
-        private static void HandleHyphen(List<Token> tokens)
+        private void HandleHyphen(List<Token> tokens)
         {
             // get last character at the last token's value
             char lastChar = tokens.Last().value.Last();
@@ -92,7 +96,7 @@ namespace Calculator.Core.Implementation
             tokens.Add(token);
         }
 
-        private static void HandleDot(List<Token> tokens)
+        private void HandleDot(List<Token> tokens)
         {
             if ((TokenTypes.Literal & getLastTokenType(tokens)) == 0)
             {
@@ -102,13 +106,13 @@ namespace Calculator.Core.Implementation
             ConcatToLastToken('.', tokens);
         }
 
-        private static void HandleParentheses(char ch, List<Token> tokens)
+        private void HandleParentheses(char ch, List<Token> tokens)
         {
             var token = CreateToken(TokenTypes.Parenthesis, ch);
             tokens.Add(token);
         }
 
-        private static void HandleOperator(char op, List<Token> tokens)
+        private void HandleOperator(char op, List<Token> tokens)
         {
             if ((TokenTypes.ValidTypeBeforeOperator & getLastTokenType(tokens)) == 0)
             {
@@ -119,27 +123,24 @@ namespace Calculator.Core.Implementation
             tokens.Add(token);
         }
 
-        private static Token CreateToken(TokenTypes type, char value)
+        private Token CreateToken(TokenTypes type, char value)
         {
             return new CalculatorToken(type, value.ToString());
         }
 
-        private static void ConcatToLastToken(char ch, List<Token> tokens)
+        private void ConcatToLastToken(char ch, List<Token> tokens)
         {
             tokens.Last().value += ch.ToString();
         }
 
-        private static TokenTypes getLastTokenType(List<Token> tokens)
+        private TokenTypes getLastTokenType(List<Token> tokens)
         {
             return tokens.Last().type;
 
         }
-        private static TokenTypes getTokenType(char c)
+        private TokenTypes getTokenType(char c)
         {
             return ParserHelper.IsDigit(c) ? TokenTypes.Literal : TokenTypes.Operator;
         }
-
-
-
     }
 }

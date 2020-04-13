@@ -29,8 +29,6 @@ namespace Calculator.Core
             return ch == ')';
         }
 
-
-
         public static bool IsHyphen(char ch)
         {
             return ch == '-';
