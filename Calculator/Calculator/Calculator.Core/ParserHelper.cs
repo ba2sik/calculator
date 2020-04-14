@@ -14,17 +14,17 @@ namespace Calculator.Core
             return operators.Contains(ch);
         }
 
-        public static bool IsParenthesis(char ch)
+        public static bool IsParentheses(char ch)
         {
             return IsLeftParenthesis(ch) || IsRightParenthesis(ch);
         }
 
-        private static bool IsLeftParenthesis(char ch)
+        public static bool IsLeftParenthesis(char ch)
         {
             return ch == '(';
         }
 
-        private static bool IsRightParenthesis(char ch)
+        public static bool IsRightParenthesis(char ch)
         {
             return ch == ')';
         }
@@ -52,7 +52,7 @@ namespace Calculator.Core
 
         public static bool IsFirstCharacterValid(char ch)
         {
-            return IsDigit(ch) || IsHyphen(ch) || IsParenthesis(ch);
+            return IsDigit(ch) || IsHyphen(ch) || IsParentheses(ch);
         }
     }
 }

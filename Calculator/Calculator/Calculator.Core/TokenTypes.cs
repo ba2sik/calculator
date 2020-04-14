@@ -4,10 +4,12 @@
     {
         Literal = 1,
         Operator = 2,
-        Parenthesis = 4,
+        LeftParenthesis = 4,
+        RightParenthesis = 8,
+        Parentheses = LeftParenthesis | RightParenthesis,
         // If the character before the operator is not  
         // literal or parenthesis, there's an parsing error
-        ValidTypeBeforeOperator = Literal | Parenthesis,
+        ValidTypeBeforeOperator = Literal | Parentheses,
         ValidFirstCharacter = ValidTypeBeforeOperator
     }
 }

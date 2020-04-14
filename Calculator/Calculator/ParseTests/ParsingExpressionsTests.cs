@@ -3,6 +3,7 @@ using Calculator.Core.Implementation;
 using System.Collections.Generic;
 using Calculator.Core;
 using System.Linq;
+using Calculator.Core.Abstraction;
 
 namespace ParseTests
 {
@@ -92,17 +93,122 @@ namespace ParseTests
             List<CalculatorToken> expected = new List<CalculatorToken>();
             expected.Add(new CalculatorToken(TokenTypes.ValidFirstCharacter, "1"));
             expected.Add(new CalculatorToken(TokenTypes.Operator, "+"));
-            expected.Add(new CalculatorToken(TokenTypes.Parenthesis, "("));
+            expected.Add(new CalculatorToken(TokenTypes.LeftParenthesis, "("));
             expected.Add(new CalculatorToken(TokenTypes.Literal, "2"));
             expected.Add(new CalculatorToken(TokenTypes.Operator, "*"));
             expected.Add(new CalculatorToken(TokenTypes.Literal, "3"));
-            expected.Add(new CalculatorToken(TokenTypes.Parenthesis, ")"));
+            expected.Add(new CalculatorToken(TokenTypes.RightParenthesis, ")"));
 
             // Act
             // Assert
             var actual = tokenizer.Tokenize(str);
 
             CollectionAssert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void Postfix1()
+        {
+            // Arrange
+            string str = "1+(2*3)";
+            char[] operators = { '+', '-', '*', '/', '^' };
+            CalculatorParser parser = new CalculatorParser(operators);
+            CalculatorTokenizer tokenizer = new CalculatorTokenizer(operators);
+
+            Queue<CalculatorToken> expected = new Queue<CalculatorToken>();
+            expected.Enqueue(new CalculatorToken(TokenTypes.Literal, "1"));
+            expected.Enqueue(new CalculatorToken(TokenTypes.Literal, "2"));
+            expected.Enqueue(new CalculatorToken(TokenTypes.Literal, "3"));
+            expected.Enqueue(new CalculatorToken(TokenTypes.Operator, "*"));
+            expected.Enqueue(new CalculatorToken(TokenTypes.Operator, "+"));
+
+            // Act
+            // Assert
+            var tokens = tokenizer.Tokenize(str);
+            var actual = parser.GetPostfixNotation(tokens);
+
+            CollectionAssert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void Postfix2()
+        {
+            // Arrange
+            string str = "-12*(4+5)-2";
+            char[] operators = { '+', '-', '*', '/', '^' };
+            CalculatorParser parser = new CalculatorParser(operators);
+            CalculatorTokenizer tokenizer = new CalculatorTokenizer(operators);
+
+            Queue<CalculatorToken> expected = new Queue<CalculatorToken>();
+            expected.Enqueue(new CalculatorToken(TokenTypes.Literal, "-12"));
+            expected.Enqueue(new CalculatorToken(TokenTypes.Literal, "4"));
+            expected.Enqueue(new CalculatorToken(TokenTypes.Literal, "5"));
+            expected.Enqueue(new CalculatorToken(TokenTypes.Operator, "+"));
+            expected.Enqueue(new CalculatorToken(TokenTypes.Literal, "-2"));
+            expected.Enqueue(new CalculatorToken(TokenTypes.Operator, "*"));
+
+            // Act
+            // Assert
+            var tokens = tokenizer.Tokenize(str);
+            var actual = parser.GetPostfixNotation(tokens);
+
+            CollectionAssert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void Postfix3()
+        {
+            // Arrange
+            string str = "12+3^2";
+            char[] operators = { '+', '-', '*', '/', '^' };
+            CalculatorParser parser = new CalculatorParser(operators);
+            CalculatorTokenizer tokenizer = new CalculatorTokenizer(operators);
+
+            Queue<CalculatorToken> expected = new Queue<CalculatorToken>();
+            expected.Enqueue(new CalculatorToken(TokenTypes.Literal, "12"));
+            expected.Enqueue(new CalculatorToken(TokenTypes.Literal, "3"));
+            expected.Enqueue(new CalculatorToken(TokenTypes.Literal, "2"));
+            expected.Enqueue(new CalculatorToken(TokenTypes.Operator, "^"));
+            expected.Enqueue(new CalculatorToken(TokenTypes.Operator, "+"));
+
+            // Act
+            // Assert
+            var tokens = tokenizer.Tokenize(str);
+            var actual = parser.GetPostfixNotation(tokens);
+
+            CollectionAssert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void EvalPostfix1()
+        {
+            // Arrange
+            string str = "1+(2*3)";
+            char[] operators = { '+', '-', '*', '/', '^' };
+            CalculatorParser parser = new CalculatorParser(operators);
+            double expected = 7;
+
+            // Act
+            // Assert
+            var actual = parser.Parse(str);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void EvalPostfix2()
+        {
+            // Arrange
+            string str = "-12.56+(9^2/3)";
+            char[] operators = { '+', '-', '*', '/', '^' };
+            CalculatorParser parser = new CalculatorParser(operators);
+            double expected = 14.44;
+
+            // Act
+            // Assert
+            var actual = parser.Parse(str);
+
+            Assert.AreEqual(expected, actual);
         }
 
         [TestMethod]

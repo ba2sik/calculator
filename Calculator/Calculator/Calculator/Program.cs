@@ -17,9 +17,12 @@ namespace Calculator
             IDisplay display = new ConsoleDisplay();
             MyCalculator calculator = new MyCalculator(display, parser);
 
-            calculator.GetCalculationFromUser();
-            calculator.CalculateAnswer();
-            calculator.DisplayAnswwer();
+            while (true)
+            {
+                calculator.GetCalculationFromUser();
+                calculator.CalculateAnswer();
+                calculator.DisplayAnswwer();
+            }
         }
     }
 }

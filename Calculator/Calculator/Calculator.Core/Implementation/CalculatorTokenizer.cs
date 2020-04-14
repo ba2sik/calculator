@@ -50,9 +50,9 @@ namespace Calculator.Core.Implementation
             {
                 HandleOperator(ch, tokens);
             }
-            else if (ParserHelper.IsParenthesis(ch))
+            else if (ParserHelper.IsParentheses(ch))
             {
-                HandleParentheses(ch, tokens);
+                HandleParenthesis(ch, tokens);
             }
             else
             {
@@ -67,7 +67,9 @@ namespace Calculator.Core.Implementation
                 throw new ArgumentException($"The operator {ch} is in bad place\n");
             }
 
-            return CreateToken(TokenTypes.ValidFirstCharacter, ch);
+            var type = ParserHelper.IsParentheses(ch) ? TokenTypes.Parentheses
+                                                      : TokenTypes.Literal;
+            return CreateToken(type, ch);
         }
 
         private void HandleDigit(char digit, List<Token> tokens)
@@ -79,7 +81,7 @@ namespace Calculator.Core.Implementation
             }
             else
             {
-                var token = CreateToken(getTokenType(digit), digit);
+                var token = CreateToken(GetTokenType(digit), digit);
                 tokens.Add(token);
             }
         }
@@ -101,7 +103,7 @@ namespace Calculator.Core.Implementation
 
         private void HandleDot(List<Token> tokens)
         {
-            if ((TokenTypes.Literal & getLastTokenType(tokens)) == 0)
+            if ((TokenTypes.Literal & GetLastTokenType(tokens)) == 0)
             {
                 throw new ArgumentException($"The sign . is in bad place\n");
             }
@@ -109,20 +111,21 @@ namespace Calculator.Core.Implementation
             ConcatToLastToken('.', tokens);
         }
 
-        private void HandleParentheses(char ch, List<Token> tokens)
+        private void HandleParenthesis(char ch, List<Token> tokens)
         {
-            var token = CreateToken(TokenTypes.Parenthesis, ch);
+            TokenTypes type = GetParenthesisTokenType(ch);
+            var token = CreateToken(type, ch);
             tokens.Add(token);
         }
 
         private void HandleOperator(char op, List<Token> tokens)
         {
-            if ((TokenTypes.ValidTypeBeforeOperator & getLastTokenType(tokens)) == 0)
+            if ((TokenTypes.ValidTypeBeforeOperator & GetLastTokenType(tokens)) == 0)
             {
                 throw new ArgumentException($"You can't put two operators in a row (except '-')\n");
             }
 
-            var token = CreateToken(getTokenType(op), op);
+            var token = CreateToken(GetTokenType(op), op);
             tokens.Add(token);
         }
 
@@ -136,14 +139,33 @@ namespace Calculator.Core.Implementation
             tokens.Last().value += ch.ToString();
         }
 
-        private TokenTypes getLastTokenType(List<Token> tokens)
+        private TokenTypes GetLastTokenType(List<Token> tokens)
         {
             return tokens.Last().type;
 
         }
-        private TokenTypes getTokenType(char c)
+        private TokenTypes GetTokenType(char c)
         {
-            return ParserHelper.IsDigit(c) ? TokenTypes.Literal : TokenTypes.Operator;
+            if (ParserHelper.IsDigit(c))
+            {
+                return TokenTypes.Literal;
+            }
+            if (ParserHelper.IsParentheses(c))
+            {
+                return TokenTypes.Parentheses;
+            }
+
+            return TokenTypes.Operator;
+        }
+
+        private TokenTypes GetParenthesisTokenType(char c)
+        {
+            if (ParserHelper.IsLeftParenthesis(c))
+            {
+                return TokenTypes.LeftParenthesis;
+            }
+
+            return TokenTypes.RightParenthesis;
         }
     }
 }
