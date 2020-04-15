@@ -1,6 +1,5 @@
 ﻿using Calculator.Core.Parser;
-using Calculator.UI.Abstraction;
-using Calculator.UI.Implementation;
+using Calculator.UI.Display;
 
 
 namespace Calculator

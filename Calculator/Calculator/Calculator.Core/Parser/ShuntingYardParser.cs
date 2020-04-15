@@ -50,7 +50,7 @@ namespace Calculator.Core.Parser
             {
                 MyToken t = tokens.Dequeue();
 
-                if (t.type == TokenType.Number)
+                if (t.Type == TokenType.Number)
                 {
                     operands.Push(t as NumberToken);
                 }

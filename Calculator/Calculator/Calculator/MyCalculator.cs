@@ -1,5 +1,6 @@
-﻿using Calculator.Core.Parser;
-using Calculator.UI.Abstraction;
+﻿using Calculator.Core.Exceptions;
+using Calculator.Core.Parser;
+using Calculator.UI.Display;
 using System;
 
 namespace Calculator
@@ -7,15 +8,15 @@ namespace Calculator
     internal class MyCalculator
     {
         private readonly IDisplay _displayType;
-        private readonly IParser _parserType;
+        private readonly IParser _parser;
         private string _userCalculation = "";
-        private double _answer;
+        private string _answer;
 
-        public MyCalculator(IDisplay displayType, IParser parserType)
+        public MyCalculator(IDisplay display, IParser parser)
         {
-            _displayType = displayType;
-            _parserType = parserType;
-            _answer = 0;
+            _displayType = display;
+            _parser = parser;
+            _answer = "";
         }
 
         public void GetCalculationFromUser()
@@ -27,15 +28,16 @@ namespace Calculator
         {
             try
             {
-                _answer = _parserType.Parse(_userCalculation);
+                _answer = _parser.Parse(_userCalculation).ToString();
             }
-            // TODO: Catch MY exception and print them
+            catch (ParsingException e)
+            {
+                _answer = e.Message;
+            }
             catch (Exception e)
             {
-                Console.WriteLine("An error occured:");
-                Console.WriteLine(e.Message);
+                _answer = $"An unexpected error occured: {e.Message}";
             }
-
         }
 
         public void DisplayAnswer()

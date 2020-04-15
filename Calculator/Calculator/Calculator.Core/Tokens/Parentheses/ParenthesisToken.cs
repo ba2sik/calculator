@@ -2,11 +2,11 @@
 {
     public abstract class ParenthesisToken : MyToken
     {
-        public readonly char sign;
+        public char Sign { get; }
 
         protected ParenthesisToken(char sign, TokenType type) : base(type, 4)
         {
-            this.sign = sign;
+            Sign = sign;
         }
     }
 }

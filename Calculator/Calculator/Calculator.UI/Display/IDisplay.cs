@@ -1,9 +1,9 @@
-﻿namespace Calculator.UI.Abstraction
+﻿namespace Calculator.UI.Display
 {
     public interface IDisplay
     {
         string GetCalculationFromUser();
 
-        void DisplayAnswer(double answer);
+        void DisplayAnswer(string answer);
     }
 }

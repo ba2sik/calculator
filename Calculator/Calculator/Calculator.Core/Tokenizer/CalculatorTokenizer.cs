@@ -1,4 +1,5 @@
-﻿using Calculator.Core.Helper;
+﻿using Calculator.Core.Exceptions;
+using Calculator.Core.Helper;
 using Calculator.Core.Tokens;
 using Calculator.Core.Tokens.Factory;
 using Calculator.Core.Tokens.Operators;
@@ -20,30 +21,48 @@ namespace Calculator.Core.Tokenizer
         public List<MyToken> Tokenize(string expression)
         {
             expression = PHelper.RemoveSpaces(expression);
-            var expArr = expression.ToCharArray();
+            var expressionCharacters = expression.ToCharArray();
+            var i = 0;
 
-            // The first char in expression has special rules
-            var firstToken = CreateFirstToken(expArr[0]);
-            var tokens = new List<MyToken> { firstToken };
-
-            // Skipping the first char
-            foreach (var currentChar in expArr.Skip(1))
+            try
             {
-                HandleCharacter(currentChar, tokens);
-            }
+                // The first character in the expression has special rules
+                var firstToken = CreateFirstToken(expressionCharacters[0]);
+                var tokens     = new List<MyToken> {firstToken};
 
-            return tokens;
+                // Skipping the first character
+                for (i = 1; i < expressionCharacters.Length; i++)
+                {
+                    HandleCharacter(expressionCharacters[i], tokens);
+                }
+
+                return tokens;
+            }
+            catch (InvalidOperationException e)
+            {
+                throw new IllegalOperationException(i, e.Message);
+            }
+            catch (KeyNotFoundException e)
+            {
+                throw new UnknownOperatorException(i, e.Message);
+            }
         }
 
         private MyToken CreateFirstToken(char c)
         {
             if (!_helper.IsFirstCharacterValid(c))
             {
-                throw new ArgumentException($"The operator {c} is in bad place\n");
+                if (!_helper.IsOperator(c))
+                {
+                    throw new KeyNotFoundException(c.ToString());
+                }
+
+                throw new InvalidOperationException($"The operator {c} is in illegal place.");
             }
 
-            var type = _helper.IsParentheses(c) ? GetParenthesisTokenType(c)
-                                                : TokenType.Number;
+            var type = _helper.IsParentheses(c)
+                           ? GetParenthesisTokenType(c)
+                           : TokenType.Number;
 
             return TokenFactory.Create(type, c);
         }
@@ -72,7 +91,7 @@ namespace Calculator.Core.Tokenizer
             }
             else
             {
-                throw new ArgumentException($"Unknown character: {ch}\n");
+                throw new KeyNotFoundException(ch.ToString());
             }
         }
 
@@ -80,7 +99,7 @@ namespace Calculator.Core.Tokenizer
         {
             var token = _helper.IsHyphenMeansNegative(tokens.Last())
                             ? TokenFactory.Create(TokenType.Number, _helper.hyphen)
-                            : TokenFactory.Create(OperatorTypes.Subtraction);
+                            : TokenFactory.Create(OperatorType.Subtraction);
 
             tokens.Add(token);
         }
@@ -89,7 +108,7 @@ namespace Calculator.Core.Tokenizer
         {
             if (GetLastTokenType(tokens) != TokenType.Number)
             {
-                throw new ArgumentException("Your decimal separator is in bad place\n");
+                throw new InvalidOperationException("Decimal separator is in bad place.");
             }
 
             ConcatToLastToken(_helper.decimalSeparator, tokens);
@@ -117,15 +136,15 @@ namespace Calculator.Core.Tokenizer
 
         private void HandleOperator(char op, List<MyToken> tokens)
         {
-            if (tokens == null) throw new ArgumentNullException(nameof(tokens));
             var lastToken = tokens.Last();
 
             if (lastToken is OperatorToken)
             {
-                throw new ArgumentException("You can't put two operators in a row (except minus)\n");
+                throw new
+                    InvalidOperationException("You can't put two operators in a row (except minus)");
             }
 
-            OperatorTypes type = _helper.OperatorsDict[op];
+            OperatorType type = _helper.OperatorsDict[op];
             tokens.Add(TokenFactory.Create(type));
         }
 
@@ -137,8 +156,7 @@ namespace Calculator.Core.Tokenizer
 
         private static TokenType GetLastTokenType(IEnumerable<MyToken> tokens)
         {
-            return tokens.Last().type;
-
+            return tokens.Last().Type;
         }
 
         private TokenType GetParenthesisTokenType(char c)

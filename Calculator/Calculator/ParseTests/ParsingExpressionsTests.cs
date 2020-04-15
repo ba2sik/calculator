@@ -1,7 +1,4 @@
-﻿using Calculator.Core;
-using Calculator.Core.Parser;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ParseTests
 {

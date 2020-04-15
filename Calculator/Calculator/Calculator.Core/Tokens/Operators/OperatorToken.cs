@@ -5,19 +5,19 @@ namespace Calculator.Core.Tokens.Operators
 {
     public abstract class OperatorToken : MyToken
     {
-        public readonly char sign;
-        public readonly bool isLeftAssociative;
-        public readonly OperatorTypes operatorType;
+        public char Sign { get; }
+        public bool IsLeftAssociative { get; }
+        public OperatorType OperatorType { get; }
 
         protected OperatorToken(char sign,
                              int precedence,
-                             OperatorTypes operatorType,
+                             OperatorType operatorOperatorType,
                              bool isLeftAssociative = false)
                                 : base(TokenType.Operator, precedence)
         {
-            this.sign = sign;
-            this.isLeftAssociative = isLeftAssociative;
-            this.operatorType = operatorType;
+            Sign = sign;
+            IsLeftAssociative = isLeftAssociative;
+            OperatorType = operatorOperatorType;
         }
 
         public abstract double Apply(NumberToken a, NumberToken b);

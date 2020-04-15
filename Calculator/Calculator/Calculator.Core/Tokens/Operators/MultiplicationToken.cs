@@ -2,7 +2,7 @@
 {
     internal class MultiplicationToken : OperatorToken
     {
-        public MultiplicationToken(char sign = '*') : base(sign, 2, OperatorTypes.Multiplication)
+        public MultiplicationToken(char sign = '*') : base(sign, 2, Core.OperatorType.Multiplication)
         {
         }
 

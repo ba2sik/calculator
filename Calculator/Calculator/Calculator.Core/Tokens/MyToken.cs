@@ -4,13 +4,13 @@ namespace Calculator.Core.Tokens
 {
     public abstract class MyToken
     {
-        public readonly TokenType type;
-        public readonly int precedence;
+        public TokenType Type { get; }
+        public int Precedence { get; }
 
         protected MyToken(TokenType type, int precedence = 0)
         {
-            this.type = type;
-            this.precedence = precedence;
+            Type = type;
+            Precedence = precedence;
         }
 
         public abstract void PerformAlgorithmStep(ref Stack<MyToken> operators,

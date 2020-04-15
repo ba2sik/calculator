@@ -7,7 +7,7 @@ namespace Calculator.Core.Helper
 {
     internal class MyHelper : PHelper
     {
-        public override Dictionary<char, OperatorTypes> OperatorsDict { get; }
+        public override Dictionary<char, OperatorType> OperatorsDict { get; }
         protected override List<OperatorToken> Operators { get; }
 
         public MyHelper()
@@ -22,8 +22,8 @@ namespace Calculator.Core.Helper
             };
 
             OperatorsDict = Operators.ToDictionary(
-                key => key.sign,
-                value => value.operatorType);
+                key => key.Sign,
+                value => value.OperatorType);
         }
 
         public void PopStackToQueue(ref Stack<MyToken> s, ref Queue<MyToken> q)
@@ -41,8 +41,8 @@ namespace Calculator.Core.Helper
 
         public static bool ShouldPopOperator(OperatorToken a, OperatorToken b)
         {
-            return a.isLeftAssociative ? a.precedence <= b.precedence
-                                       : a.precedence < b.precedence;
+            return a.IsLeftAssociative ? a.Precedence <= b.Precedence
+                                       : a.Precedence < b.Precedence;
         }
     }
 }

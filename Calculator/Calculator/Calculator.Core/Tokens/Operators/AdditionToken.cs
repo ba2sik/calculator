@@ -2,7 +2,7 @@
 {
     internal class AdditionToken : OperatorToken
     {
-        public AdditionToken(char sign = '+') : base(sign, 1, OperatorTypes.Addition)
+        public AdditionToken(char sign = '+') : base(sign, 1, Core.OperatorType.Addition)
         {
         }
 

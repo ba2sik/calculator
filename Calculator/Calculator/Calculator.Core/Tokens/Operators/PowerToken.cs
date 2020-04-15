@@ -4,7 +4,7 @@ namespace Calculator.Core.Tokens.Operators
 {
     internal class PowerToken : OperatorToken
     {
-        public PowerToken(char sign = '^') : base(sign, 3, OperatorTypes.Power)
+        public PowerToken(char sign = '^') : base(sign, 3, Core.OperatorType.Power)
         {
         }
 

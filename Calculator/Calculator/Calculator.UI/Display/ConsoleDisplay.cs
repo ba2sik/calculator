@@ -1,7 +1,6 @@
-﻿using Calculator.UI.Abstraction;
-using System;
+﻿using System;
 
-namespace Calculator.UI.Implementation
+namespace Calculator.UI.Display
 {
     public class ConsoleDisplay : IDisplay
     {
@@ -11,9 +10,9 @@ namespace Calculator.UI.Implementation
             return Console.ReadLine();
         }
 
-        public void DisplayAnswer(double answer)
+        public void DisplayAnswer(string answer)
         {
-            Console.WriteLine($"The answer is: {answer}");
+            Console.WriteLine(answer);
         }
     }
 }

@@ -41,9 +41,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Abstraction\IDisplay.cs" />
-    <Compile Include="Implementation\ConsoleDisplay.cs" />
+    <Compile Include="Display\IDisplay.cs" />
+    <Compile Include="Display\ConsoleDisplay.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

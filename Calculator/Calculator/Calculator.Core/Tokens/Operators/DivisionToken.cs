@@ -2,7 +2,7 @@
 {
     internal class DivisionToken : OperatorToken
     {
-        public DivisionToken(char sign = '/') : base(sign, 2, OperatorTypes.Division)
+        public DivisionToken(char sign = '/') : base(sign, 2, Core.OperatorType.Division)
         {
         }
 

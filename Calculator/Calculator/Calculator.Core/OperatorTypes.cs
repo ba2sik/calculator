@@ -1,6 +1,6 @@
 ﻿namespace Calculator.Core
 {
-    public enum OperatorTypes : uint
+    public enum OperatorType
     {
         Addition,
         Subtraction,

@@ -21,22 +21,22 @@ namespace Calculator.Core.Tokens.Factory
             }
         }
 
-        public static MyToken Create(OperatorTypes type)
+        public static MyToken Create(OperatorType type)
         {
             switch (type)
             {
-                case OperatorTypes.Addition:
+                case OperatorType.Addition:
                     return new AdditionToken();
-                case OperatorTypes.Subtraction:
+                case OperatorType.Subtraction:
                     return new SubtractionToken();
-                case OperatorTypes.Multiplication:
+                case OperatorType.Multiplication:
                     return new MultiplicationToken();
-                case OperatorTypes.Division:
+                case OperatorType.Division:
                     return new DivisionToken();
-                case OperatorTypes.Power:
+                case OperatorType.Power:
                     return new PowerToken();
                 default:
-                    throw new ArgumentException($"Unknown type: {type}");
+                    throw new ArgumentException($"Unknown operator type: {type}");
             }
 
         }

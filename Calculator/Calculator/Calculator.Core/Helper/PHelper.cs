@@ -11,7 +11,7 @@ namespace Calculator.Core.Helper
         public readonly char rightParenthesis;
         public readonly char decimalSeparator;
 
-        public abstract Dictionary<char, OperatorTypes> OperatorsDict { get; }
+        public abstract Dictionary<char, OperatorType> OperatorsDict { get; }
         protected abstract List<OperatorToken> Operators { get; }
 
         protected PHelper(
@@ -28,7 +28,7 @@ namespace Calculator.Core.Helper
 
         public bool IsOperator(char c)
         {
-            return Operators.Exists(op => op.sign == c);
+            return Operators.Exists(op => op.Sign == c);
         }
 
         public static bool IsDigit(char c)
