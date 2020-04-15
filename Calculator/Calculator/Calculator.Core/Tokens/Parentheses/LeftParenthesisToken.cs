@@ -4,7 +4,7 @@ namespace Calculator.Core.Tokens.Parentheses
 {
     internal class LeftParenthesisToken : ParenthesisToken
     {
-        public LeftParenthesisToken(char sign = '(') : base(sign, TokenTypes.LeftParenthesis)
+        public LeftParenthesisToken(char sign = '(') : base(sign, TokenType.LeftParenthesis)
         {
         }
 

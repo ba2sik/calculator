@@ -1,26 +1,23 @@
-﻿using Calculator.Core.Abstraction;
-using Calculator.Core.Parser;
+﻿using Calculator.Core.Parser;
 using Calculator.UI.Abstraction;
 using Calculator.UI.Implementation;
 
 
 namespace Calculator
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
-            //char[] operators = { '+', '-', '*', '/', '^' };
-            //IParser parser = new ShuntingYardParser(operators);
-            IParser parser = new PShuntingYardParser();
+            IParser parser = new ShuntingYardParser();
             IDisplay display = new ConsoleDisplay();
-            MyCalculator calculator = new MyCalculator(display, parser);
+            var calculator = new MyCalculator(display, parser);
 
             while (true)
             {
                 calculator.GetCalculationFromUser();
                 calculator.CalculateAnswer();
-                calculator.DisplayAnswwer();
+                calculator.DisplayAnswer();
             }
         }
     }

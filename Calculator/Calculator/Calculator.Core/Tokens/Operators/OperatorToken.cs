@@ -1,6 +1,5 @@
 ﻿using Calculator.Core.Helper;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Calculator.Core.Tokens.Operators
 {
@@ -10,11 +9,11 @@ namespace Calculator.Core.Tokens.Operators
         public readonly bool isLeftAssociative;
         public readonly OperatorTypes operatorType;
 
-        public OperatorToken(char sign,
+        protected OperatorToken(char sign,
                              int precedence,
                              OperatorTypes operatorType,
                              bool isLeftAssociative = false)
-                                : base(TokenTypes.Operator, precedence)
+                                : base(TokenType.Operator, precedence)
         {
             this.sign = sign;
             this.isLeftAssociative = isLeftAssociative;
@@ -26,7 +25,7 @@ namespace Calculator.Core.Tokens.Operators
         public override void PerformAlgorithmStep(ref Stack<MyToken> operators,
                                                   ref Queue<MyToken> output)
         {
-            while (operators.Any() && operators.Peek() is OperatorToken)
+            while (MyHelper.OperatorAtTop(operators))
             {
                 var op = operators.Peek() as OperatorToken;
 

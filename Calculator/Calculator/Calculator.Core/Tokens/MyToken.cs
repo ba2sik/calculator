@@ -4,10 +4,10 @@ namespace Calculator.Core.Tokens
 {
     public abstract class MyToken
     {
-        public readonly TokenTypes type;
+        public readonly TokenType type;
         public readonly int precedence;
 
-        protected MyToken(TokenTypes type, int precedence = 0)
+        protected MyToken(TokenType type, int precedence = 0)
         {
             this.type = type;
             this.precedence = precedence;

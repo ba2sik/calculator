@@ -1,5 +1,4 @@
-﻿using Calculator.Core.Abstraction;
-using Calculator.Core.Tokens;
+﻿using Calculator.Core.Tokens;
 using Calculator.Core.Tokens.Operators;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +10,7 @@ namespace Calculator.Core.Helper
         public override Dictionary<char, OperatorTypes> OperatorsDict { get; }
         protected override List<OperatorToken> Operators { get; }
 
-        public MyHelper() : base()
+        public MyHelper()
         {
             Operators = new List<OperatorToken>
             {
@@ -19,10 +18,11 @@ namespace Calculator.Core.Helper
                 new SubtractionToken(),
                 new MultiplicationToken(),
                 new DivisionToken(),
-                new PowerToken(),
+                new PowerToken()
             };
+
             OperatorsDict = Operators.ToDictionary(
-                key => key.sign, 
+                key => key.sign,
                 value => value.operatorType);
         }
 
@@ -33,9 +33,10 @@ namespace Calculator.Core.Helper
                 q.Enqueue(s.Pop());
             }
         }
-        public bool IsThereOperators(Stack<Token> s)
+
+        public static bool OperatorAtTop(Stack<MyToken> s)
         {
-            return s.Any() && s.Peek().type == TokenTypes.Operator;
+            return s.Any() && s.Peek() is OperatorToken;
         }
 
         public static bool ShouldPopOperator(OperatorToken a, OperatorToken b)

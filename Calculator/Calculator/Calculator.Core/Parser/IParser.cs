@@ -1,4 +1,4 @@
-﻿namespace Calculator.Core.Abstraction
+﻿namespace Calculator.Core.Parser
 {
     public interface IParser
     {

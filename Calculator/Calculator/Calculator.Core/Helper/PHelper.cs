@@ -1,7 +1,6 @@
 ﻿using Calculator.Core.Tokens;
 using Calculator.Core.Tokens.Operators;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Calculator.Core.Helper
 {
@@ -10,7 +9,7 @@ namespace Calculator.Core.Helper
         public readonly char hyphen;
         public readonly char leftParenthesis;
         public readonly char rightParenthesis;
-        public readonly char decimalSeperator;
+        public readonly char decimalSeparator;
 
         public abstract Dictionary<char, OperatorTypes> OperatorsDict { get; }
         protected abstract List<OperatorToken> Operators { get; }
@@ -19,12 +18,12 @@ namespace Calculator.Core.Helper
             char hyphen = '-',
             char leftParenthesis = '(',
             char rightParenthesis = ')',
-            char decimalSeperator = '.')
+            char decimalSeparator = '.')
         {
             this.hyphen = hyphen;
             this.leftParenthesis = leftParenthesis;
             this.rightParenthesis = rightParenthesis;
-            this.decimalSeperator = decimalSeperator;
+            this.decimalSeparator = decimalSeparator;
         }
 
         public bool IsOperator(char c)
@@ -62,9 +61,9 @@ namespace Calculator.Core.Helper
             return c == rightParenthesis;
         }
 
-        public bool IsDecimalSeperator(char c)
+        public bool IsDecimalSeparator(char c)
         {
-            return c == decimalSeperator;
+            return c == decimalSeparator;
         }
 
         public virtual bool IsHyphenMeansNegative(MyToken previousToken)

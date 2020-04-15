@@ -2,19 +2,19 @@
 using Calculator.Core.Tokens.Parentheses;
 using System;
 
-namespace Calculator.Core.Tokens
+namespace Calculator.Core.Tokens.Factory
 {
     internal static class TokenFactory
     {
-        public static MyToken Create(TokenTypes type, char c = '\0')
+        public static MyToken Create(TokenType type, char c = '\0')
         {
             switch (type)
             {
-                case TokenTypes.Number:
+                case TokenType.Number:
                     return new NumberToken(c.ToString());
-                case TokenTypes.LeftParenthesis:
+                case TokenType.LeftParenthesis:
                     return new LeftParenthesisToken();
-                case TokenTypes.RightParenthesis:
+                case TokenType.RightParenthesis:
                     return new RightParenthesisToken();
                 default:
                     throw new ArgumentException($"Unknown type: {type}");

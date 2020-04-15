@@ -2,7 +2,7 @@
 {
     internal class SubtractionToken : OperatorToken
     {
-        public SubtractionToken(char sign = '-') : base(sign, 1,OperatorTypes.Subtraction)
+        public SubtractionToken(char sign = '-') : base(sign, 1, OperatorTypes.Subtraction)
         {
         }
 

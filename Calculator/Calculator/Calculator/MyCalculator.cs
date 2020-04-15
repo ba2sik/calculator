@@ -1,21 +1,21 @@
-﻿using Calculator.Core.Abstraction;
+﻿using Calculator.Core.Parser;
 using Calculator.UI.Abstraction;
 using System;
 
 namespace Calculator
 {
-    class MyCalculator
+    internal class MyCalculator
     {
-        private readonly IDisplay _displayType = null;
-        private readonly IParser _parserType = null;
+        private readonly IDisplay _displayType;
+        private readonly IParser _parserType;
         private string _userCalculation = "";
-        private double _answer = 0.0;
+        private double _answer;
 
         public MyCalculator(IDisplay displayType, IParser parserType)
         {
-            this._displayType = displayType;
-            this._parserType = parserType;
-
+            _displayType = displayType;
+            _parserType = parserType;
+            _answer = 0;
         }
 
         public void GetCalculationFromUser()
@@ -38,7 +38,7 @@ namespace Calculator
 
         }
 
-        public void DisplayAnswwer()
+        public void DisplayAnswer()
         {
             _displayType.DisplayAnswer(_answer);
         }

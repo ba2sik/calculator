@@ -2,10 +2,10 @@
 {
     public enum OperatorTypes : uint
     {
-       Addition,
-       Subtraction,
-       Multiplication,
-       Division,
-       Power
+        Addition,
+        Subtraction,
+        Multiplication,
+        Division,
+        Power
     }
 }

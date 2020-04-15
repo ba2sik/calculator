@@ -1,58 +1,72 @@
-﻿using Calculator.Core.Abstraction;
-using Calculator.Core.Tokenizer;
+﻿using Calculator.Core.Helper;
+using Calculator.Core.Tokens;
+using Calculator.Core.Tokens.Factory;
+using Calculator.Core.Tokens.Operators;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Calculator.Core.Implementation
+namespace Calculator.Core.Tokenizer
 {
     internal class CalculatorTokenizer : ITokenizer
     {
+        private readonly PHelper _helper;
 
-        private readonly char[] _operators = null;
-
-        public CalculatorTokenizer(char[] operators)
+        public CalculatorTokenizer(PHelper helper)
         {
-            _operators = operators;
+            _helper = helper;
         }
 
-        public List<Token> Tokenize(string expression)
+        public List<MyToken> Tokenize(string expression)
         {
-            string cleanExpression = ParserHelper.RemoveSpaces(expression);
-            char[] expArr = cleanExpression.ToCharArray();
+            expression = PHelper.RemoveSpaces(expression);
+            var expArr = expression.ToCharArray();
 
             // The first char in expression has special rules
             var firstToken = CreateFirstToken(expArr[0]);
-            var tokens = new List<Token>() { firstToken };
+            var tokens = new List<MyToken> { firstToken };
 
             // Skipping the first char
             foreach (var currentChar in expArr.Skip(1))
             {
-                HandleCharacter(currentChar, _operators, tokens);
+                HandleCharacter(currentChar, tokens);
             }
 
             return tokens;
         }
 
-        private void HandleCharacter(char ch, char[] operators, List<Token> tokens)
+        private MyToken CreateFirstToken(char c)
         {
-            if (ParserHelper.IsHyphen(ch))
+            if (!_helper.IsFirstCharacterValid(c))
+            {
+                throw new ArgumentException($"The operator {c} is in bad place\n");
+            }
+
+            var type = _helper.IsParentheses(c) ? GetParenthesisTokenType(c)
+                                                : TokenType.Number;
+
+            return TokenFactory.Create(type, c);
+        }
+
+        private void HandleCharacter(char ch, List<MyToken> tokens)
+        {
+            if (_helper.IsHyphen(ch))
             {
                 HandleHyphen(tokens);
             }
-            else if (ParserHelper.IsDot(ch))
+            else if (_helper.IsDecimalSeparator(ch))
             {
-                HandleDot(tokens);
+                HandleDecimalSeparator(tokens);
             }
-            else if (ParserHelper.IsDigit(ch))
+            else if (PHelper.IsDigit(ch))
             {
                 HandleDigit(ch, tokens);
             }
-            else if (ParserHelper.IsOperator(ch, operators))
+            else if (_helper.IsOperator(ch))
             {
                 HandleOperator(ch, tokens);
             }
-            else if (ParserHelper.IsParentheses(ch))
+            else if (_helper.IsParentheses(ch))
             {
                 HandleParenthesis(ch, tokens);
             }
@@ -62,113 +76,76 @@ namespace Calculator.Core.Implementation
             }
         }
 
-        private Token CreateFirstToken(char ch)
+        private void HandleHyphen(ICollection<MyToken> tokens)
         {
-            if (!ParserHelper.IsFirstCharacterValid(ch))
-            {
-                throw new ArgumentException($"The operator {ch} is in bad place\n");
-            }
+            var token = _helper.IsHyphenMeansNegative(tokens.Last())
+                            ? TokenFactory.Create(TokenType.Number, _helper.hyphen)
+                            : TokenFactory.Create(OperatorTypes.Subtraction);
 
-            var type = ParserHelper.IsParentheses(ch) ? TokenTypes.Parentheses
-                                                      : TokenTypes.Number;
-            return CreateToken(type, ch);
+            tokens.Add(token);
         }
 
-        private void HandleDigit(char digit, List<Token> tokens)
+        private void HandleDecimalSeparator(IReadOnlyCollection<MyToken> tokens)
         {
-            // AND in case its type is involving multiple types
-            if ((tokens.Last().type & TokenTypes.Number) == TokenTypes.Number)
+            if (GetLastTokenType(tokens) != TokenType.Number)
+            {
+                throw new ArgumentException("Your decimal separator is in bad place\n");
+            }
+
+            ConcatToLastToken(_helper.decimalSeparator, tokens);
+        }
+
+        private void HandleDigit(char digit, ICollection<MyToken> tokens)
+        {
+            var lastToken = tokens.Last();
+
+            if (lastToken is NumberToken)
             {
                 ConcatToLastToken(digit, tokens);
             }
             else
             {
-                var token = CreateToken(GetTokenType(digit), digit);
-                tokens.Add(token);
+                tokens.Add(TokenFactory.Create(TokenType.Number, digit));
             }
         }
 
-        private void HandleHyphen(List<Token> tokens)
+        private void HandleParenthesis(char ch, ICollection<MyToken> tokens)
         {
-            // get last character at the last token's value
-            char lastChar = tokens.Last().value.Last();
-            TokenTypes type = TokenTypes.Operator;
+            var type = GetParenthesisTokenType(ch);
+            tokens.Add(TokenFactory.Create(type));
+        }
 
-            if (ParserHelper.IsHyphenMeansNegative(lastChar))
+        private void HandleOperator(char op, List<MyToken> tokens)
+        {
+            if (tokens == null) throw new ArgumentNullException(nameof(tokens));
+            var lastToken = tokens.Last();
+
+            if (lastToken is OperatorToken)
             {
-                type = TokenTypes.Number;
+                throw new ArgumentException("You can't put two operators in a row (except minus)\n");
             }
 
-            var token = CreateToken(type, '-');
-            tokens.Add(token);
+            OperatorTypes type = _helper.OperatorsDict[op];
+            tokens.Add(TokenFactory.Create(type));
         }
 
-        private void HandleDot(List<Token> tokens)
+
+        private static void ConcatToLastToken(char c, IEnumerable<MyToken> tokens)
         {
-            if ((TokenTypes.Number & GetLastTokenType(tokens)) == 0)
-            {
-                throw new ArgumentException($"The sign . is in bad place\n");
-            }
-
-            ConcatToLastToken('.', tokens);
+            (tokens.Last() as NumberToken).ConcatCharacter(c);
         }
 
-        private void HandleParenthesis(char ch, List<Token> tokens)
-        {
-            TokenTypes type = GetParenthesisTokenType(ch);
-            var token = CreateToken(type, ch);
-            tokens.Add(token);
-        }
-
-        private void HandleOperator(char op, List<Token> tokens)
-        {
-            if ((TokenTypes.ValidTypeBeforeOperator & GetLastTokenType(tokens)) == 0)
-            {
-                throw new ArgumentException($"You can't put two operators in a row (except '-')\n");
-            }
-
-            var token = CreateToken(GetTokenType(op), op);
-            tokens.Add(token);
-        }
-
-        private Token CreateToken(TokenTypes type, char value)
-        {
-            return new CalculatorToken(type, value.ToString());
-        }
-
-        private void ConcatToLastToken(char ch, List<Token> tokens)
-        {
-            tokens.Last().value += ch.ToString();
-        }
-
-        private TokenTypes GetLastTokenType(List<Token> tokens)
+        private static TokenType GetLastTokenType(IEnumerable<MyToken> tokens)
         {
             return tokens.Last().type;
 
         }
-        private TokenTypes GetTokenType(char c)
+
+        private TokenType GetParenthesisTokenType(char c)
         {
-            if (ParserHelper.IsDigit(c))
-            {
-                return TokenTypes.Number;
-            }
-            if (ParserHelper.IsParentheses(c))
-            {
-                return TokenTypes.Parentheses;
-            }
-
-            return TokenTypes.Operator;
+            return _helper.IsLeftParenthesis(c)
+                       ? TokenType.LeftParenthesis
+                       : TokenType.RightParenthesis;
         }
-
-        private TokenTypes GetParenthesisTokenType(char c)
-        {
-            if (ParserHelper.IsLeftParenthesis(c))
-            {
-                return TokenTypes.LeftParenthesis;
-            }
-
-            return TokenTypes.RightParenthesis;
-        }
-
     }
 }

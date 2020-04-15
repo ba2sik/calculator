@@ -6,7 +6,7 @@ namespace Calculator.Core.Tokens
     {
         private string _value;
 
-        public NumberToken(string str) : base(TokenTypes.Operator)
+        public NumberToken(string str) : base(TokenType.Number)
         {
             _value = str;
         }
