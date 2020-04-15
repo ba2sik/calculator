@@ -4,7 +4,7 @@ namespace Calculator.Core.Implementation
 {
     public class CalculatorToken : Token
     {
-        public CalculatorToken(TokenTypes type, string value) : base(type,value) {}
+        public CalculatorToken(TokenTypes type, string value) : base(type, value) { }
 
         public override bool Equals(object obj)
         {
@@ -12,7 +12,7 @@ namespace Calculator.Core.Implementation
                     this.type == (obj as CalculatorToken).type;
         }
 
-        
+
         public override int GetHashCode()
         {
             // Example I found on the internet

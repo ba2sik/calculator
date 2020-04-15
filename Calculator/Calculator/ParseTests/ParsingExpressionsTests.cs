@@ -1,9 +1,7 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Calculator.Core;
 using Calculator.Core.Implementation;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
-using Calculator.Core;
-using System.Linq;
-using Calculator.Core.Abstraction;
 
 namespace ParseTests
 {
@@ -31,10 +29,12 @@ namespace ParseTests
             string str = "-12*34";
             CalculatorTokenizer tokenizer = new CalculatorTokenizer(operators);
 
-            List<CalculatorToken> expected = new List<CalculatorToken>();
-            expected.Add(new CalculatorToken(TokenTypes.ValidFirstCharacter, "-12"));
-            expected.Add(new CalculatorToken(TokenTypes.Operator, "*"));
-            expected.Add(new CalculatorToken(TokenTypes.Literal, "34"));
+            List<CalculatorToken> expected = new List<CalculatorToken>
+            {
+                new CalculatorToken(TokenTypes.ValidFirstCharacter, "-12"),
+                new CalculatorToken(TokenTypes.Operator, "*"),
+                new CalculatorToken(TokenTypes.Number, "34")
+            };
 
             // Act
             // Assert
@@ -51,10 +51,12 @@ namespace ParseTests
 
             CalculatorTokenizer tokenizer = new CalculatorTokenizer(operators);
 
-            List<CalculatorToken> expected = new List<CalculatorToken>();
-            expected.Add(new CalculatorToken(TokenTypes.ValidFirstCharacter, "-12"));
-            expected.Add(new CalculatorToken(TokenTypes.Operator, "-"));
-            expected.Add(new CalculatorToken(TokenTypes.Literal, "-4"));
+            List<CalculatorToken> expected = new List<CalculatorToken>
+            {
+                new CalculatorToken(TokenTypes.ValidFirstCharacter, "-12"),
+                new CalculatorToken(TokenTypes.Operator, "-"),
+                new CalculatorToken(TokenTypes.Number, "-4")
+            };
 
             // Act
             // Assert
@@ -70,10 +72,12 @@ namespace ParseTests
             string str = "-12.3+5.666";
             CalculatorTokenizer tokenizer = new CalculatorTokenizer(operators);
 
-            List<CalculatorToken> expected = new List<CalculatorToken>();
-            expected.Add(new CalculatorToken(TokenTypes.ValidFirstCharacter, "-12.3"));
-            expected.Add(new CalculatorToken(TokenTypes.Operator, "+"));
-            expected.Add(new CalculatorToken(TokenTypes.Literal, "5.666"));
+            List<CalculatorToken> expected = new List<CalculatorToken>
+            {
+                new CalculatorToken(TokenTypes.ValidFirstCharacter, "-12.3"),
+                new CalculatorToken(TokenTypes.Operator, "+"),
+                new CalculatorToken(TokenTypes.Number, "5.666")
+            };
 
             // Act
             // Assert
@@ -90,14 +94,16 @@ namespace ParseTests
             string str = "1+(2*3)";
             CalculatorTokenizer tokenizer = new CalculatorTokenizer(operators);
 
-            List<CalculatorToken> expected = new List<CalculatorToken>();
-            expected.Add(new CalculatorToken(TokenTypes.ValidFirstCharacter, "1"));
-            expected.Add(new CalculatorToken(TokenTypes.Operator, "+"));
-            expected.Add(new CalculatorToken(TokenTypes.LeftParenthesis, "("));
-            expected.Add(new CalculatorToken(TokenTypes.Literal, "2"));
-            expected.Add(new CalculatorToken(TokenTypes.Operator, "*"));
-            expected.Add(new CalculatorToken(TokenTypes.Literal, "3"));
-            expected.Add(new CalculatorToken(TokenTypes.RightParenthesis, ")"));
+            List<CalculatorToken> expected = new List<CalculatorToken>
+            {
+                new CalculatorToken(TokenTypes.ValidFirstCharacter, "1"),
+                new CalculatorToken(TokenTypes.Operator, "+"),
+                new CalculatorToken(TokenTypes.LeftParenthesis, "("),
+                new CalculatorToken(TokenTypes.Number, "2"),
+                new CalculatorToken(TokenTypes.Operator, "*"),
+                new CalculatorToken(TokenTypes.Number, "3"),
+                new CalculatorToken(TokenTypes.RightParenthesis, ")")
+            };
 
             // Act
             // Assert
@@ -112,13 +118,13 @@ namespace ParseTests
             // Arrange
             string str = "1+(2*3)";
             char[] operators = { '+', '-', '*', '/', '^' };
-            CalculatorParser parser = new CalculatorParser(operators);
+            ShuntingYardParser parser = new ShuntingYardParser(operators);
             CalculatorTokenizer tokenizer = new CalculatorTokenizer(operators);
 
             Queue<CalculatorToken> expected = new Queue<CalculatorToken>();
-            expected.Enqueue(new CalculatorToken(TokenTypes.Literal, "1"));
-            expected.Enqueue(new CalculatorToken(TokenTypes.Literal, "2"));
-            expected.Enqueue(new CalculatorToken(TokenTypes.Literal, "3"));
+            expected.Enqueue(new CalculatorToken(TokenTypes.Number, "1"));
+            expected.Enqueue(new CalculatorToken(TokenTypes.Number, "2"));
+            expected.Enqueue(new CalculatorToken(TokenTypes.Number, "3"));
             expected.Enqueue(new CalculatorToken(TokenTypes.Operator, "*"));
             expected.Enqueue(new CalculatorToken(TokenTypes.Operator, "+"));
 
@@ -136,15 +142,15 @@ namespace ParseTests
             // Arrange
             string str = "-12*(4+5)-2";
             char[] operators = { '+', '-', '*', '/', '^' };
-            CalculatorParser parser = new CalculatorParser(operators);
+            ShuntingYardParser parser = new ShuntingYardParser(operators);
             CalculatorTokenizer tokenizer = new CalculatorTokenizer(operators);
 
             Queue<CalculatorToken> expected = new Queue<CalculatorToken>();
-            expected.Enqueue(new CalculatorToken(TokenTypes.Literal, "-12"));
-            expected.Enqueue(new CalculatorToken(TokenTypes.Literal, "4"));
-            expected.Enqueue(new CalculatorToken(TokenTypes.Literal, "5"));
+            expected.Enqueue(new CalculatorToken(TokenTypes.Number, "-12"));
+            expected.Enqueue(new CalculatorToken(TokenTypes.Number, "4"));
+            expected.Enqueue(new CalculatorToken(TokenTypes.Number, "5"));
             expected.Enqueue(new CalculatorToken(TokenTypes.Operator, "+"));
-            expected.Enqueue(new CalculatorToken(TokenTypes.Literal, "-2"));
+            expected.Enqueue(new CalculatorToken(TokenTypes.Number, "-2"));
             expected.Enqueue(new CalculatorToken(TokenTypes.Operator, "*"));
 
             // Act
@@ -161,13 +167,13 @@ namespace ParseTests
             // Arrange
             string str = "12+3^2";
             char[] operators = { '+', '-', '*', '/', '^' };
-            CalculatorParser parser = new CalculatorParser(operators);
+            ShuntingYardParser parser = new ShuntingYardParser(operators);
             CalculatorTokenizer tokenizer = new CalculatorTokenizer(operators);
 
             Queue<CalculatorToken> expected = new Queue<CalculatorToken>();
-            expected.Enqueue(new CalculatorToken(TokenTypes.Literal, "12"));
-            expected.Enqueue(new CalculatorToken(TokenTypes.Literal, "3"));
-            expected.Enqueue(new CalculatorToken(TokenTypes.Literal, "2"));
+            expected.Enqueue(new CalculatorToken(TokenTypes.Number, "12"));
+            expected.Enqueue(new CalculatorToken(TokenTypes.Number, "3"));
+            expected.Enqueue(new CalculatorToken(TokenTypes.Number, "2"));
             expected.Enqueue(new CalculatorToken(TokenTypes.Operator, "^"));
             expected.Enqueue(new CalculatorToken(TokenTypes.Operator, "+"));
 
@@ -185,7 +191,7 @@ namespace ParseTests
             // Arrange
             string str = "1+(2*3)";
             char[] operators = { '+', '-', '*', '/', '^' };
-            CalculatorParser parser = new CalculatorParser(operators);
+            ShuntingYardParser parser = new ShuntingYardParser(operators);
             double expected = 7;
 
             // Act
@@ -201,7 +207,7 @@ namespace ParseTests
             // Arrange
             string str = "-12.56+(9^2/3)";
             char[] operators = { '+', '-', '*', '/', '^' };
-            CalculatorParser parser = new CalculatorParser(operators);
+            ShuntingYardParser parser = new ShuntingYardParser(operators);
             double expected = 14.44;
 
             // Act

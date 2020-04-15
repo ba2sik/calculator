@@ -5,17 +5,17 @@ using System.Linq;
 
 namespace Calculator.Core.Implementation
 {
-    public class CalculatorParser : IParser
+    public class ShuntingYardParser : IParser
     {
         private readonly Dictionary<char, int> _operatorsPrecedence;
         private readonly List<char> _leftAssociativeOperators;
         private readonly ITokenizer _tokenizer;
 
-        public CalculatorParser(char[] operators)
+        public ShuntingYardParser(char[] operators)
         {
             _tokenizer = new CalculatorTokenizer(operators);
             _operatorsPrecedence = GetOperatrosPrecedence();
-            _leftAssociativeOperators = GetLeftAssociativeOperators();
+            _leftAssociativeOperators = new List<char> { '+', '-', '*', '/' };
         }
 
         private Dictionary<char, int> GetOperatrosPrecedence()
@@ -32,17 +32,6 @@ namespace Calculator.Core.Implementation
             };
         }
 
-        private List<char> GetLeftAssociativeOperators()
-        {
-            return new List<char>
-            {
-                '+',
-                '-',
-                '*',
-                '/',
-            };
-        }
-
         public double Parse(string expression)
         {
             List<Token> tokens = _tokenizer.Tokenize(expression);
@@ -52,7 +41,7 @@ namespace Calculator.Core.Implementation
             return result;
         }
 
-        public Queue<Token> GetPostfixNotation(List<Token> tokens)
+        public Queue<Token> GetPostfixNotation(IEnumerable<Token> tokens)
         {
             Queue<Token> output = new Queue<Token>();
             Stack<Token> operators = new Stack<Token>();
@@ -70,26 +59,7 @@ namespace Calculator.Core.Implementation
             return output;
         }
 
-        private void HandleOperatorToken(
-            Token token,
-            ref Stack<Token> operators,
-            ref Queue<Token> output)
-        {
-            while (operators.Any() && operators.Peek().type == TokenTypes.Operator)
-            {
-                var op = operators.Peek();
-                if ((IsTokenLeftAssociative(token) && (GetTokenPrecedence(token) <= GetTokenPrecedence(op))
-                    || (!IsTokenLeftAssociative(token) && (GetTokenPrecedence(token) < GetTokenPrecedence(op)))))
-                {
-                    output.Enqueue(operators.Pop());
-                }
-                else
-                {
-                    break;
-                }
-            }
-        }
-
+        
         private void HandleToken(
             Token token,
             ref Stack<Token> operators,
@@ -97,7 +67,7 @@ namespace Calculator.Core.Implementation
         {
             switch (token.type)
             {
-                case TokenTypes.Literal:
+                case TokenTypes.Number:
                     output.Enqueue(token);
                     break;
 
@@ -123,7 +93,28 @@ namespace Calculator.Core.Implementation
             }
         }
 
-            private int GetTokenPrecedence(Token t)
+        private void HandleOperatorToken(
+            Token token,
+            ref Stack<Token> operators,
+            ref Queue<Token> output)
+        {
+            while (operators.Any() && operators.Peek().type == TokenTypes.Operator)
+            {
+                var op = operators.Peek();
+                if ((IsTokenLeftAssociative(token) && (GetTokenPrecedence(token) <= GetTokenPrecedence(op))
+                    || (!IsTokenLeftAssociative(token) && (GetTokenPrecedence(token) < GetTokenPrecedence(op)))))
+                {
+                    output.Enqueue(operators.Pop());
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
+
+        private int GetTokenPrecedence(Token t)
         {
             char op = char.Parse(t.value);
             return _operatorsPrecedence[op];
@@ -140,10 +131,10 @@ namespace Calculator.Core.Implementation
         {
             Stack<double> operands = new Stack<double>();
 
-            while(tokens.Any())
+            while (tokens.Any())
             {
                 Token t = tokens.Dequeue();
-                if (t.type == TokenTypes.Literal)
+                if (t.type == TokenTypes.Number)
                 {
                     operands.Push(double.Parse(t.value));
                 }
@@ -173,7 +164,7 @@ namespace Calculator.Core.Implementation
                     }
                     else if (t.value == "^")
                     {
-                        result = Math.Pow(first,second);
+                        result = Math.Pow(first, second);
                     }
 
                     operands.Push(result);

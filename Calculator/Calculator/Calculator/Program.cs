@@ -1,9 +1,7 @@
-﻿using Calculator.Core;
-using Calculator.Core.Abstraction;
+﻿using Calculator.Core.Abstraction;
 using Calculator.Core.Implementation;
 using Calculator.UI.Abstraction;
 using Calculator.UI.Implementation;
-using System.Collections.Generic;
 
 
 namespace Calculator
@@ -13,7 +11,7 @@ namespace Calculator
         static void Main(string[] args)
         {
             char[] operators = { '+', '-', '*', '/', '^' };
-            IParser parser = new CalculatorParser(operators);
+            IParser parser = new ShuntingYardParser(operators);
             IDisplay display = new ConsoleDisplay();
             MyCalculator calculator = new MyCalculator(display, parser);
 
@@ -23,6 +21,8 @@ namespace Calculator
                 calculator.CalculateAnswer();
                 calculator.DisplayAnswwer();
             }
+
+
         }
     }
 }

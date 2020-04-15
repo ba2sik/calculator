@@ -5,9 +5,9 @@ using System.Linq;
 
 namespace Calculator.Core.Implementation
 {
-    public class CalculatorTokenizer : ITokenizer
+    internal class CalculatorTokenizer : ITokenizer
     {
-        private char[] _operators = null;
+        private readonly char[] _operators = null;
 
         public CalculatorTokenizer(char[] operators)
         {
@@ -68,14 +68,14 @@ namespace Calculator.Core.Implementation
             }
 
             var type = ParserHelper.IsParentheses(ch) ? TokenTypes.Parentheses
-                                                      : TokenTypes.Literal;
+                                                      : TokenTypes.Number;
             return CreateToken(type, ch);
         }
 
         private void HandleDigit(char digit, List<Token> tokens)
         {
             // AND in case its type is involving multiple types
-            if ((tokens.Last().type & TokenTypes.Literal) == TokenTypes.Literal)
+            if ((tokens.Last().type & TokenTypes.Number) == TokenTypes.Number)
             {
                 ConcatToLastToken(digit, tokens);
             }
@@ -94,7 +94,7 @@ namespace Calculator.Core.Implementation
 
             if (ParserHelper.IsHyphenMeansNegative(lastChar))
             {
-                type = TokenTypes.Literal;
+                type = TokenTypes.Number;
             }
 
             var token = CreateToken(type, '-');
@@ -103,7 +103,7 @@ namespace Calculator.Core.Implementation
 
         private void HandleDot(List<Token> tokens)
         {
-            if ((TokenTypes.Literal & GetLastTokenType(tokens)) == 0)
+            if ((TokenTypes.Number & GetLastTokenType(tokens)) == 0)
             {
                 throw new ArgumentException($"The sign . is in bad place\n");
             }
@@ -148,7 +148,7 @@ namespace Calculator.Core.Implementation
         {
             if (ParserHelper.IsDigit(c))
             {
-                return TokenTypes.Literal;
+                return TokenTypes.Number;
             }
             if (ParserHelper.IsParentheses(c))
             {

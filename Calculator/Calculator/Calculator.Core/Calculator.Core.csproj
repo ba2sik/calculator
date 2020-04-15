@@ -46,7 +46,7 @@
     <Compile Include="Abstraction\Token.cs" />
     <Compile Include="Implementation\CalculatorTokenizer.cs" />
     <Compile Include="ParserHelper.cs" />
-    <Compile Include="Implementation\CalculatorParser.cs" />
+    <Compile Include="Implementation\ShuntingYardParser.cs" />
     <Compile Include="Implementation\CalculatorToken.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TokenTypes.cs" />

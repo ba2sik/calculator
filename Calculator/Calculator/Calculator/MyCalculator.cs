@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Calculator.Core.Abstraction;
+﻿using Calculator.Core.Abstraction;
 using Calculator.UI.Abstraction;
+using System;
 
 namespace Calculator
 {
     class MyCalculator
     {
-        private IDisplay _displayType = null;
-        private IParser _parserType = null;
+        private readonly IDisplay _displayType = null;
+        private readonly IParser _parserType = null;
         private string _userCalculation = "";
         private double _answer = 0.0;
 
@@ -24,7 +20,7 @@ namespace Calculator
 
         public void GetCalculationFromUser()
         {
-            _userCalculation  = _displayType.GetCalculationFromUser();
+            _userCalculation = _displayType.GetCalculationFromUser();
         }
 
         public void CalculateAnswer()
@@ -38,7 +34,6 @@ namespace Calculator
             {
                 Console.WriteLine("An error occured:");
                 Console.WriteLine(e.Message);
-                throw;
             }
 
         }
