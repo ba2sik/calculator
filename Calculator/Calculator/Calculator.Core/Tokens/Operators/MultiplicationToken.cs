@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Calculator.Core.Tokens
+﻿namespace Calculator.Core.Tokens.Operators
 {
-    class AdditionToken
+    internal class MultiplicationToken : OperatorToken
     {
+        public MultiplicationToken(char sign = '*') : base(sign, 2, OperatorTypes.Multiplication)
+        {
+        }
+
+        public override double Apply(NumberToken a, NumberToken b)
+        {
+            return a.GetValue() * b.GetValue();
+        }
     }
 }

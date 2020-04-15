@@ -2,7 +2,7 @@
 
 namespace Calculator.Core.Implementation
 {
-    public class CalculatorToken : Token
+    internal class CalculatorToken : Token
     {
         public CalculatorToken(TokenTypes type, string value) : base(type, value) { }
 

@@ -1,5 +1,5 @@
 ﻿using Calculator.Core.Abstraction;
-using Calculator.Core.Implementation;
+using Calculator.Core.Parser;
 using Calculator.UI.Abstraction;
 using Calculator.UI.Implementation;
 
@@ -10,8 +10,9 @@ namespace Calculator
     {
         static void Main(string[] args)
         {
-            char[] operators = { '+', '-', '*', '/', '^' };
-            IParser parser = new ShuntingYardParser(operators);
+            //char[] operators = { '+', '-', '*', '/', '^' };
+            //IParser parser = new ShuntingYardParser(operators);
+            IParser parser = new PShuntingYardParser();
             IDisplay display = new ConsoleDisplay();
             MyCalculator calculator = new MyCalculator(display, parser);
 
@@ -21,8 +22,6 @@ namespace Calculator
                 calculator.CalculateAnswer();
                 calculator.DisplayAnswwer();
             }
-
-
         }
     }
 }

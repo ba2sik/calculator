@@ -41,14 +41,33 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Abstraction\IParser.cs" />
-    <Compile Include="Abstraction\ITokenizer.cs" />
+    <Compile Include="Parser\IParser.cs" />
+    <Compile Include="Parser\PShuntingYardParser.cs" />
+    <Compile Include="Tokenizer\PITokenizer.cs" />
+    <Compile Include="Tokenizer\PCalculatorTokenizer.cs" />
+    <Compile Include="Tokenizer\ITokenizer.cs" />
     <Compile Include="Abstraction\Token.cs" />
-    <Compile Include="Implementation\CalculatorTokenizer.cs" />
+    <Compile Include="Helper\PHelper.cs" />
+    <Compile Include="Helper\MyHelper.cs" />
+    <Compile Include="Tokenizer\CalculatorTokenizer.cs" />
     <Compile Include="ParserHelper.cs" />
-    <Compile Include="Implementation\ShuntingYardParser.cs" />
+    <Compile Include="Parser\ShuntingYardParser.cs" />
     <Compile Include="Implementation\CalculatorToken.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tokens\Factory\OperatorTokenFactory.cs" />
+    <Compile Include="Tokens\Operators\PowerToken.cs" />
+    <Compile Include="Tokens\Operators\MultiplicationToken.cs" />
+    <Compile Include="Tokens\Operators\DivisionToken.cs" />
+    <Compile Include="Tokens\NumberToken.cs" />
+    <Compile Include="Tokens\Parentheses\RightParenthesisToken.cs" />
+    <Compile Include="Tokens\Parentheses\LeftParenthesisToken.cs" />
+    <Compile Include="Tokens\Parentheses\ParenthesisToken.cs" />
+    <Compile Include="Tokens\Operators\SubtractionToken.cs" />
+    <Compile Include="Tokens\Operators\AdditionToken.cs" />
+    <Compile Include="Tokens\MyToken.cs" />
+    <Compile Include="Tokens\Operators\OperatorToken.cs" />
+    <Compile Include="Tokens\Factory\TokenFactory.cs" />
+    <Compile Include="OperatorTypes.cs" />
     <Compile Include="TokenTypes.cs" />
   </ItemGroup>
   <ItemGroup />

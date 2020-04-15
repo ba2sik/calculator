@@ -1,9 +1,11 @@
 ﻿using Calculator.Core.Abstraction;
+using Calculator.Core.Implementation;
+using Calculator.Core.Tokenizer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Calculator.Core.Implementation
+namespace Calculator.Core.Parser
 {
     public class ShuntingYardParser : IParser
     {
@@ -59,7 +61,7 @@ namespace Calculator.Core.Implementation
             return output;
         }
 
-        
+
         private void HandleToken(
             Token token,
             ref Stack<Token> operators,
@@ -101,8 +103,8 @@ namespace Calculator.Core.Implementation
             while (operators.Any() && operators.Peek().type == TokenTypes.Operator)
             {
                 var op = operators.Peek();
-                if ((IsTokenLeftAssociative(token) && (GetTokenPrecedence(token) <= GetTokenPrecedence(op))
-                    || (!IsTokenLeftAssociative(token) && (GetTokenPrecedence(token) < GetTokenPrecedence(op)))))
+                if (IsTokenLeftAssociative(token) && GetTokenPrecedence(token) <= GetTokenPrecedence(op)
+                    || !IsTokenLeftAssociative(token) && GetTokenPrecedence(token) < GetTokenPrecedence(op))
                 {
                     output.Enqueue(operators.Pop());
                 }

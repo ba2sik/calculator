@@ -1,20 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Calculator.Core.Tokens
+﻿namespace Calculator.Core.Tokens.Operators
 {
     internal class SubtractionToken : OperatorToken
     {
-        public SubtractionToken(char sign = '-') : base(sign)
+        public SubtractionToken(char sign = '-') : base(sign, 1,OperatorTypes.Subtraction)
         {
         }
 
         public override double Apply(NumberToken a, NumberToken b)
         {
-            return a.value - b.value;
+            return a.GetValue() - b.GetValue();
         }
     }
 }

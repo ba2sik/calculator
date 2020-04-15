@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Calculator.Core.Tokens
+﻿namespace Calculator.Core.Tokens.Parentheses
 {
-    class ParenthesisToken
+    public  abstract class ParenthesisToken : MyToken
     {
+        public readonly char sign;
+
+        public ParenthesisToken(char sign, TokenTypes type) : base(type, precedence:4)
+        {
+            this.sign = sign;
+        }
     }
 }

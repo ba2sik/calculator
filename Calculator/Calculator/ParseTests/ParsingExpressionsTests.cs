@@ -1,5 +1,6 @@
 ﻿using Calculator.Core;
 using Calculator.Core.Implementation;
+using Calculator.Core.Parser;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 
@@ -31,7 +32,7 @@ namespace ParseTests
 
             List<CalculatorToken> expected = new List<CalculatorToken>
             {
-                new CalculatorToken(TokenTypes.ValidFirstCharacter, "-12"),
+                new CalculatorToken(TokenTypes.Number, "-12"),
                 new CalculatorToken(TokenTypes.Operator, "*"),
                 new CalculatorToken(TokenTypes.Number, "34")
             };
@@ -53,7 +54,7 @@ namespace ParseTests
 
             List<CalculatorToken> expected = new List<CalculatorToken>
             {
-                new CalculatorToken(TokenTypes.ValidFirstCharacter, "-12"),
+                new CalculatorToken(TokenTypes.Number, "-12"),
                 new CalculatorToken(TokenTypes.Operator, "-"),
                 new CalculatorToken(TokenTypes.Number, "-4")
             };
@@ -74,7 +75,7 @@ namespace ParseTests
 
             List<CalculatorToken> expected = new List<CalculatorToken>
             {
-                new CalculatorToken(TokenTypes.ValidFirstCharacter, "-12.3"),
+                new CalculatorToken(TokenTypes.Number, "-12.3"),
                 new CalculatorToken(TokenTypes.Operator, "+"),
                 new CalculatorToken(TokenTypes.Number, "5.666")
             };
@@ -96,7 +97,7 @@ namespace ParseTests
 
             List<CalculatorToken> expected = new List<CalculatorToken>
             {
-                new CalculatorToken(TokenTypes.ValidFirstCharacter, "1"),
+                new CalculatorToken(TokenTypes.Number, "1"),
                 new CalculatorToken(TokenTypes.Operator, "+"),
                 new CalculatorToken(TokenTypes.LeftParenthesis, "("),
                 new CalculatorToken(TokenTypes.Number, "2"),

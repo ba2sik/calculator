@@ -1,4 +1,5 @@
 ﻿using Calculator.Core.Abstraction;
+using Calculator.Core.Tokenizer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +8,7 @@ namespace Calculator.Core.Implementation
 {
     internal class CalculatorTokenizer : ITokenizer
     {
+
         private readonly char[] _operators = null;
 
         public CalculatorTokenizer(char[] operators)
@@ -167,5 +169,6 @@ namespace Calculator.Core.Implementation
 
             return TokenTypes.RightParenthesis;
         }
+
     }
 }

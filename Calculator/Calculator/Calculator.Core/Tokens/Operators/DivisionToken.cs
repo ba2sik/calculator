@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Calculator.Core.Tokens
+﻿namespace Calculator.Core.Tokens.Operators
 {
-    class AdditionToken
+    internal class DivisionToken : OperatorToken
     {
+        public DivisionToken(char sign = '/') : base(sign, 2, OperatorTypes.Division)
+        {
+        }
+
+        public override double Apply(NumberToken a, NumberToken b)
+        {
+            return a.GetValue() / b.GetValue();
+        }
     }
 }

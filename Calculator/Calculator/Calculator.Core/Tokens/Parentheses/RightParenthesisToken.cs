@@ -1,12 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
-namespace Calculator.Core.Tokens
+namespace Calculator.Core.Tokens.Parentheses
 {
-    class ParenthesisToken
+    internal class RightParenthesisToken : ParenthesisToken
     {
+        public RightParenthesisToken(char sign = ')') : base(sign, TokenTypes.RightParenthesis)
+        {
+        }
+
+        public override void PerformAlgorithmStep(ref Stack<MyToken> operators, ref Queue<MyToken> output)
+        {
+            while (!(operators.Peek() is LeftParenthesisToken))
+            {
+                output.Enqueue(operators.Pop());
+            }
+            // Getting rid of the left parenthesis
+            operators.Pop();
+        }
     }
 }
