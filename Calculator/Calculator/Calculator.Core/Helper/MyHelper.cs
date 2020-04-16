@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Calculator.Core.Helper
 {
-    internal class MyHelper : PHelper
+    internal class MyHelper : Helper
     {
         public override Dictionary<char, OperatorType> OperatorsDict { get; }
         protected override List<OperatorToken> Operators { get; }
@@ -26,7 +26,7 @@ namespace Calculator.Core.Helper
                 value => value.OperatorType);
         }
 
-        public void PopStackToQueue(ref Stack<MyToken> s, ref Queue<MyToken> q)
+        public void PopStackToQueue(ref Stack<Token> s, ref Queue<Token> q)
         {
             while (s.Any())
             {
@@ -34,7 +34,7 @@ namespace Calculator.Core.Helper
             }
         }
 
-        public static bool OperatorAtTop(Stack<MyToken> s)
+        public static bool OperatorAtTop(Stack<Token> s)
         {
             return s.Any() && s.Peek() is OperatorToken;
         }

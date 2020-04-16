@@ -2,7 +2,7 @@
 
 namespace Calculator.Core.Tokens
 {
-    public class NumberToken : MyToken
+    public class NumberToken : Token
     {
         private string _value;
 
@@ -21,7 +21,7 @@ namespace Calculator.Core.Tokens
             _value += c.ToString();
         }
 
-        public override void PerformAlgorithmStep(ref Stack<MyToken> operators, ref Queue<MyToken> output)
+        public override void PerformAlgorithmStep(ref Stack<Token> operators, ref Queue<Token> output)
         {
             output.Enqueue(this);
         }

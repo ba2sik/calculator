@@ -6,7 +6,7 @@ namespace Calculator.Core.Tokens.Factory
 {
     internal static class TokenFactory
     {
-        public static MyToken Create(TokenType type, char c = '\0')
+        public static Token Create(TokenType type, char c = '\0')
         {
             switch (type)
             {
@@ -21,7 +21,7 @@ namespace Calculator.Core.Tokens.Factory
             }
         }
 
-        public static MyToken Create(OperatorType type)
+        public static Token Create(OperatorType type)
         {
             switch (type)
             {

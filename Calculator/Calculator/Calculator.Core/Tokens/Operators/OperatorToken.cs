@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Calculator.Core.Tokens.Operators
 {
-    public abstract class OperatorToken : MyToken
+    public abstract class OperatorToken : Token
     {
         public char Sign { get; }
         public bool IsLeftAssociative { get; }
@@ -22,8 +22,8 @@ namespace Calculator.Core.Tokens.Operators
 
         public abstract double Apply(NumberToken a, NumberToken b);
 
-        public override void PerformAlgorithmStep(ref Stack<MyToken> operators,
-                                                  ref Queue<MyToken> output)
+        public override void PerformAlgorithmStep(ref Stack<Token> operators,
+                                                  ref Queue<Token> output)
         {
             while (MyHelper.OperatorAtTop(operators))
             {

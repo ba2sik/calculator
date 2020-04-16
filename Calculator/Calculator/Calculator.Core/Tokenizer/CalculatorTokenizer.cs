@@ -1,5 +1,4 @@
 ﻿using Calculator.Core.Exceptions;
-using Calculator.Core.Helper;
 using Calculator.Core.Tokens;
 using Calculator.Core.Tokens.Factory;
 using Calculator.Core.Tokens.Operators;
@@ -11,24 +10,24 @@ namespace Calculator.Core.Tokenizer
 {
     internal class CalculatorTokenizer : ITokenizer
     {
-        private readonly PHelper _helper;
+        private readonly Helper.Helper _helper;
 
-        public CalculatorTokenizer(PHelper helper)
+        public CalculatorTokenizer(Helper.Helper helper)
         {
             _helper = helper;
         }
 
-        public List<MyToken> Tokenize(string expression)
+        public List<Token> Tokenize(string expression)
         {
-            expression = PHelper.RemoveSpaces(expression);
+            expression = Helper.Helper.RemoveSpaces(expression);
             var expressionCharacters = expression.ToCharArray();
-            var i = 0;
+            var i                    = 0;
 
             try
             {
                 // The first character in the expression has special rules
                 var firstToken = CreateFirstToken(expressionCharacters[0]);
-                var tokens     = new List<MyToken> {firstToken};
+                var tokens     = new List<Token> {firstToken};
 
                 // Skipping the first character
                 for (i = 1; i < expressionCharacters.Length; i++)
@@ -46,18 +45,22 @@ namespace Calculator.Core.Tokenizer
             {
                 throw new UnknownOperatorException(i, e.Message);
             }
+            catch (ArgumentException e)
+            {
+                throw new ParsingException(i, e.Message);
+            }
         }
 
-        private MyToken CreateFirstToken(char c)
+        private Token CreateFirstToken(char c)
         {
             if (!_helper.IsFirstCharacterValid(c))
             {
-                if (!_helper.IsOperator(c))
+                if (_helper.IsOperator(c))
                 {
-                    throw new KeyNotFoundException(c.ToString());
+                    throw new InvalidOperationException($"The operator {c} is in illegal place.");
                 }
 
-                throw new InvalidOperationException($"The operator {c} is in illegal place.");
+                throw new KeyNotFoundException(c.ToString());
             }
 
             var type = _helper.IsParentheses(c)
@@ -67,7 +70,7 @@ namespace Calculator.Core.Tokenizer
             return TokenFactory.Create(type, c);
         }
 
-        private void HandleCharacter(char ch, List<MyToken> tokens)
+        private void HandleCharacter(char ch, List<Token> tokens)
         {
             if (_helper.IsHyphen(ch))
             {
@@ -77,7 +80,7 @@ namespace Calculator.Core.Tokenizer
             {
                 HandleDecimalSeparator(tokens);
             }
-            else if (PHelper.IsDigit(ch))
+            else if (Helper.Helper.IsDigit(ch))
             {
                 HandleDigit(ch, tokens);
             }
@@ -95,7 +98,7 @@ namespace Calculator.Core.Tokenizer
             }
         }
 
-        private void HandleHyphen(ICollection<MyToken> tokens)
+        private void HandleHyphen(ICollection<Token> tokens)
         {
             var token = _helper.IsHyphenMeansNegative(tokens.Last())
                             ? TokenFactory.Create(TokenType.Number, _helper.hyphen)
@@ -104,7 +107,7 @@ namespace Calculator.Core.Tokenizer
             tokens.Add(token);
         }
 
-        private void HandleDecimalSeparator(IReadOnlyCollection<MyToken> tokens)
+        private void HandleDecimalSeparator(IReadOnlyCollection<Token> tokens)
         {
             if (GetLastTokenType(tokens) != TokenType.Number)
             {
@@ -114,7 +117,7 @@ namespace Calculator.Core.Tokenizer
             ConcatToLastToken(_helper.decimalSeparator, tokens);
         }
 
-        private void HandleDigit(char digit, ICollection<MyToken> tokens)
+        private void HandleDigit(char digit, ICollection<Token> tokens)
         {
             var lastToken = tokens.Last();
 
@@ -128,13 +131,13 @@ namespace Calculator.Core.Tokenizer
             }
         }
 
-        private void HandleParenthesis(char ch, ICollection<MyToken> tokens)
+        private void HandleParenthesis(char ch, ICollection<Token> tokens)
         {
             var type = GetParenthesisTokenType(ch);
             tokens.Add(TokenFactory.Create(type));
         }
 
-        private void HandleOperator(char op, List<MyToken> tokens)
+        private void HandleOperator(char op, List<Token> tokens)
         {
             var lastToken = tokens.Last();
 
@@ -149,12 +152,12 @@ namespace Calculator.Core.Tokenizer
         }
 
 
-        private static void ConcatToLastToken(char c, IEnumerable<MyToken> tokens)
+        private static void ConcatToLastToken(char c, IEnumerable<Token> tokens)
         {
             (tokens.Last() as NumberToken).ConcatCharacter(c);
         }
 
-        private static TokenType GetLastTokenType(IEnumerable<MyToken> tokens)
+        private static TokenType GetLastTokenType(IEnumerable<Token> tokens)
         {
             return tokens.Last().Type;
         }

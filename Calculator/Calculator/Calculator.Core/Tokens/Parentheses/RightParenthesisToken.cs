@@ -8,7 +8,7 @@ namespace Calculator.Core.Tokens.Parentheses
         {
         }
 
-        public override void PerformAlgorithmStep(ref Stack<MyToken> operators, ref Queue<MyToken> output)
+        public override void PerformAlgorithmStep(ref Stack<Token> operators, ref Queue<Token> output)
         {
             while (!(operators.Peek() is LeftParenthesisToken))
             {

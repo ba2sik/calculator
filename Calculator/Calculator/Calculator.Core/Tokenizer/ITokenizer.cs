@@ -5,6 +5,6 @@ namespace Calculator.Core.Tokenizer
 {
     internal interface ITokenizer
     {
-        List<MyToken> Tokenize(string expression);
+        List<Token> Tokenize(string expression);
     }
 }

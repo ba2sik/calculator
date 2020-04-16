@@ -1,6 +1,6 @@
 ﻿namespace Calculator.Core.Tokens.Parentheses
 {
-    public abstract class ParenthesisToken : MyToken
+    public abstract class ParenthesisToken : Token
     {
         public char Sign { get; }
 

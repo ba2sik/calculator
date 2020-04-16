@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Calculator.Core.Helper
 {
-    internal abstract class PHelper
+    internal abstract class Helper
     {
         public readonly char hyphen;
         public readonly char leftParenthesis;
@@ -14,7 +14,7 @@ namespace Calculator.Core.Helper
         public abstract Dictionary<char, OperatorType> OperatorsDict { get; }
         protected abstract List<OperatorToken> Operators { get; }
 
-        protected PHelper(
+        protected Helper(
             char hyphen = '-',
             char leftParenthesis = '(',
             char rightParenthesis = ')',
@@ -66,7 +66,7 @@ namespace Calculator.Core.Helper
             return c == decimalSeparator;
         }
 
-        public virtual bool IsHyphenMeansNegative(MyToken previousToken)
+        public virtual bool IsHyphenMeansNegative(Token previousToken)
         {
             // When hyphen is after number, it means subtraction. Else - negation
             return !(previousToken is NumberToken);
