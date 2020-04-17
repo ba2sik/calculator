@@ -2,9 +2,9 @@
 
 namespace Calculator.Core.Tokens.Operators
 {
-    internal class PowerToken : OperatorToken
+    public class PowerToken : OperatorToken
     {
-        public PowerToken(char sign = '^') : base(sign, 3, OperatorType.Power)
+        public PowerToken(char sign = '^') : base(sign, 3, OperatorType.Power, false)
         {
         }
 

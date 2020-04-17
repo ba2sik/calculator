@@ -1,6 +1,6 @@
 ﻿namespace Calculator.Core.Tokens.Operators
 {
-    internal class MultiplicationToken : OperatorToken
+    public class MultiplicationToken : OperatorToken
     {
         public MultiplicationToken(char sign = '*') : base(sign, 2, OperatorType.Multiplication)
         {

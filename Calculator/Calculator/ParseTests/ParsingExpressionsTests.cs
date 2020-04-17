@@ -1,4 +1,14 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Collections.Generic;
+using Calculator.Core;
+using Calculator.Core.Exceptions;
+using Calculator.Core.Helpers;
+using Calculator.Core.Parser;
+using Calculator.Core.Tokenizer;
+using Calculator.Core.Tokens;
+using Calculator.Core.Tokens.Factory;
+using Calculator.Core.Tokens.Operators;
+using Calculator.Core.Tokens.Parentheses;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ParseTests
 {
@@ -17,25 +27,35 @@ namespace ParseTests
             set { testContextInstance = value; }
         }
 
-        /*
+        private List<OperatorToken> _operators = new List<OperatorToken>
+        {
+            new AdditionToken(),
+            new SubtractionToken(),
+            new MultiplicationToken(),
+            new DivisionToken(),
+            new PowerToken()
+        };
+
+        private ExpressionSymbols _symbols = new ExpressionSymbols();
+
         [TestMethod]
         public void NegativeExpression1()
         {
             // Arrange
-            string str = "-12*34";
-            CalculatorTokenizer tokenizer = new CalculatorTokenizer(operators);
+            string str       = "-12*34";
+            var    helper    = new ShuntingYardHelper(_operators, _symbols);
+            var    tokenizer = new CalculatorTokenizer(helper);
 
-            List<CalculatorToken> expected = new List<CalculatorToken>
+            List<Token> expected = new List<Token>
             {
-                new CalculatorToken(TokenType.Number, "-12"),
-                new CalculatorToken(TokenType.Operator, "*"),
-                new CalculatorToken(TokenType.Number, "34")
+                new NumberToken("-12"),
+                new MultiplicationToken(),
+                new NumberToken("34")
             };
 
             // Act
             // Assert
             var actual = tokenizer.Tokenize(str);
-
             CollectionAssert.AreEqual(expected, actual);
         }
 
@@ -43,15 +63,15 @@ namespace ParseTests
         public void NegativeExpression2()
         {
             // Arrange
-            string str = "-12--4";
+            string str       = "-12--4";
+            var    helper    = new ShuntingYardHelper(_operators, _symbols);
+            var    tokenizer = new CalculatorTokenizer(helper);
 
-            CalculatorTokenizer tokenizer = new CalculatorTokenizer(operators);
-
-            List<CalculatorToken> expected = new List<CalculatorToken>
+            List<Token> expected = new List<Token>
             {
-                new CalculatorToken(TokenType.Number, "-12"),
-                new CalculatorToken(TokenType.Operator, "-"),
-                new CalculatorToken(TokenType.Number, "-4")
+                new NumberToken("-12"),
+                new SubtractionToken(),
+                new NumberToken("-4")
             };
 
             // Act
@@ -65,14 +85,15 @@ namespace ParseTests
         public void DotExpression1()
         {
             // Arrange
-            string str = "-12.3+5.666";
-            CalculatorTokenizer tokenizer = new CalculatorTokenizer(operators);
+            string str       = "-12.3+5.666";
+            var    helper    = new ShuntingYardHelper(_operators, _symbols);
+            var    tokenizer = new CalculatorTokenizer(helper);
 
-            List<CalculatorToken> expected = new List<CalculatorToken>
+            List<Token> expected = new List<Token>
             {
-                new CalculatorToken(TokenType.Number, "-12.3"),
-                new CalculatorToken(TokenType.Operator, "+"),
-                new CalculatorToken(TokenType.Number, "5.666")
+                new NumberToken("-12.3"),
+                new AdditionToken(),
+                new NumberToken("5.666")
             };
 
             // Act
@@ -87,18 +108,19 @@ namespace ParseTests
         public void ParenthesisExpression1()
         {
             // Arrange
-            string str = "1+(2*3)";
-            CalculatorTokenizer tokenizer = new CalculatorTokenizer(operators);
+            string str       = "1+(2*3)";
+            var    helper    = new ShuntingYardHelper(_operators, _symbols);
+            var    tokenizer = new CalculatorTokenizer(helper);
 
-            List<CalculatorToken> expected = new List<CalculatorToken>
+            List<Token> expected = new List<Token>
             {
-                new CalculatorToken(TokenType.Number, "1"),
-                new CalculatorToken(TokenType.Operator, "+"),
-                new CalculatorToken(TokenType.LeftParenthesis, "("),
-                new CalculatorToken(TokenType.Number, "2"),
-                new CalculatorToken(TokenType.Operator, "*"),
-                new CalculatorToken(TokenType.Number, "3"),
-                new CalculatorToken(TokenType.RightParenthesis, ")")
+                new NumberToken("1"),
+                new AdditionToken(),
+                new LeftParenthesisToken(),
+                new NumberToken("2"),
+                new MultiplicationToken(),
+                new NumberToken("3"),
+                new RightParenthesisToken()
             };
 
             // Act
@@ -112,17 +134,18 @@ namespace ParseTests
         public void Postfix1()
         {
             // Arrange
-            string str = "1+(2*3)";
-            char[] operators = { '+', '-', '*', '/', '^' };
-            ShuntingYardParser parser = new ShuntingYardParser(operators);
-            CalculatorTokenizer tokenizer = new CalculatorTokenizer(operators);
+            string             str    = "1+(2*3)";
+            ShuntingYardParser parser = new ShuntingYardParser(_operators);
+            var helper =
+                new ShuntingYardHelper(_operators, _symbols);
+            var tokenizer = new CalculatorTokenizer(helper);
 
-            Queue<CalculatorToken> expected = new Queue<CalculatorToken>();
-            expected.Enqueue(new CalculatorToken(TokenType.Number, "1"));
-            expected.Enqueue(new CalculatorToken(TokenType.Number, "2"));
-            expected.Enqueue(new CalculatorToken(TokenType.Number, "3"));
-            expected.Enqueue(new CalculatorToken(TokenType.Operator, "*"));
-            expected.Enqueue(new CalculatorToken(TokenType.Operator, "+"));
+            Queue<Token> expected = new Queue<Token>();
+            expected.Enqueue(new NumberToken("1"));
+            expected.Enqueue(new NumberToken("2"));
+            expected.Enqueue(new NumberToken("3"));
+            expected.Enqueue(new MultiplicationToken());
+            expected.Enqueue(new AdditionToken());
 
             // Act
             // Assert
@@ -132,22 +155,25 @@ namespace ParseTests
             CollectionAssert.AreEqual(expected, actual);
         }
 
+
         [TestMethod]
         public void Postfix2()
         {
             // Arrange
-            string str = "-12*(4+5)-2";
-            char[] operators = { '+', '-', '*', '/', '^' };
-            ShuntingYardParser parser = new ShuntingYardParser(operators);
-            CalculatorTokenizer tokenizer = new CalculatorTokenizer(operators);
+            string             str    = "-12*(4+5)-2";
+            ShuntingYardParser parser = new ShuntingYardParser(_operators);
+            var helper =
+                new ShuntingYardHelper(_operators, _symbols);
+            var tokenizer = new CalculatorTokenizer(helper);
 
-            Queue<CalculatorToken> expected = new Queue<CalculatorToken>();
-            expected.Enqueue(new CalculatorToken(TokenType.Number, "-12"));
-            expected.Enqueue(new CalculatorToken(TokenType.Number, "4"));
-            expected.Enqueue(new CalculatorToken(TokenType.Number, "5"));
-            expected.Enqueue(new CalculatorToken(TokenType.Operator, "+"));
-            expected.Enqueue(new CalculatorToken(TokenType.Number, "-2"));
-            expected.Enqueue(new CalculatorToken(TokenType.Operator, "*"));
+            Queue<Token> expected = new Queue<Token>();
+            expected.Enqueue(new NumberToken("-12"));
+            expected.Enqueue(new NumberToken("4"));
+            expected.Enqueue(new NumberToken("5"));
+            expected.Enqueue(new AdditionToken());
+            expected.Enqueue(new MultiplicationToken());
+            expected.Enqueue(new NumberToken("2"));
+            expected.Enqueue(new SubtractionToken());
 
             // Act
             // Assert
@@ -161,17 +187,18 @@ namespace ParseTests
         public void Postfix3()
         {
             // Arrange
-            string str = "12+3^2";
-            char[] operators = { '+', '-', '*', '/', '^' };
-            ShuntingYardParser parser = new ShuntingYardParser(operators);
-            CalculatorTokenizer tokenizer = new CalculatorTokenizer(operators);
+            string             str    = "12+3^2";
+            ShuntingYardParser parser = new ShuntingYardParser(_operators);
+            var helper =
+                new ShuntingYardHelper(_operators, _symbols);
+            var tokenizer = new CalculatorTokenizer(helper);
 
-            Queue<CalculatorToken> expected = new Queue<CalculatorToken>();
-            expected.Enqueue(new CalculatorToken(TokenType.Number, "12"));
-            expected.Enqueue(new CalculatorToken(TokenType.Number, "3"));
-            expected.Enqueue(new CalculatorToken(TokenType.Number, "2"));
-            expected.Enqueue(new CalculatorToken(TokenType.Operator, "^"));
-            expected.Enqueue(new CalculatorToken(TokenType.Operator, "+"));
+            Queue<Token> expected = new Queue<Token>();
+            expected.Enqueue(new NumberToken("12"));
+            expected.Enqueue(new NumberToken("3"));
+            expected.Enqueue(new NumberToken("2"));
+            expected.Enqueue(new PowerToken());
+            expected.Enqueue(new AdditionToken());
 
             // Act
             // Assert
@@ -185,10 +212,9 @@ namespace ParseTests
         public void EvalPostfix1()
         {
             // Arrange
-            string str = "1+(2*3)";
-            char[] operators = { '+', '-', '*', '/', '^' };
-            ShuntingYardParser parser = new ShuntingYardParser(operators);
-            double expected = 7;
+            string             str      = "1+(2*3)";
+            ShuntingYardParser parser   = new ShuntingYardParser(_operators);
+            double             expected = 7;
 
             // Act
             // Assert
@@ -201,10 +227,9 @@ namespace ParseTests
         public void EvalPostfix2()
         {
             // Arrange
-            string str = "-12.56+(9^2/3)";
-            char[] operators = { '+', '-', '*', '/', '^' };
-            ShuntingYardParser parser = new ShuntingYardParser(operators);
-            double expected = 14.44;
+            string             str      = "-12.56+(9^2/3)";
+            ShuntingYardParser parser   = new ShuntingYardParser(_operators);
+            double             expected = 14.44;
 
             // Act
             // Assert
@@ -214,69 +239,46 @@ namespace ParseTests
         }
 
         [TestMethod]
-        public void DotOnFirstCharacter_ShouldThrowArgumentException()
+        public void EvalPostfix3()
         {
             // Arrange
-            string str = ".12*34";
-
-            CalculatorTokenizer tokenizer = new CalculatorTokenizer(operators);
+            string             str      = "-(2*3)^2+666";
+            ShuntingYardParser parser   = new ShuntingYardParser(_operators);
+            double             expected = 630;
 
             // Act
             // Assert
-            Assert.ThrowsException<System.ArgumentException>(() =>
-                    tokenizer.Tokenize(str));
-        }
-
-        [TestMethod]
-        public void TwoOperatorsInARow_ShouldThrowArgumentException()
-        {
-            // Arrange
-            string str = ".12**4";
-            CalculatorTokenizer tokenizer = new CalculatorTokenizer(operators);
-
-            // Act
-            // Assert
-            Assert.ThrowsException<System.ArgumentException>(() =>
-                    tokenizer.Tokenize(str));
-        }
-
-        [TestMethod]
-        public void OperatorOnFirstCharacter_ShouldThrowArgumentException()
-        {
-            // Arrange
-            string str = "*12*34";
-            CalculatorTokenizer tokenizer = new CalculatorTokenizer(operators);
-
-            // Act
-            // Assert
-            Assert.ThrowsException<System.ArgumentException>(() =>
-                    tokenizer.Tokenize(str));
-        }
-
-        [TestMethod]
-        public void HyphenMeansNegative()
-        {
-            // Arrange
-            char c = '*';
-            bool expected = true;
-
-            // Assert
-            bool actual = ParserHelper.IsHyphenMeansNegative(c);
+            var actual = parser.Parse(str);
 
             Assert.AreEqual(expected, actual);
         }
 
+
         [TestMethod]
-        public void HyphenMeansSubtraction()
+        public void DotOnFirstCharacter_ShouldThrowTokenizationException()
         {
             // Arrange
-            char c = '8';
-            bool expected = false;
+            string str       = ".12*34";
+            var    helper    = new ShuntingYardHelper(_operators, _symbols);
+            var    tokenizer = new CalculatorTokenizer(helper);
 
+            // Act
             // Assert
-            bool actual = ParserHelper.IsHyphenMeansNegative(c);
+            Assert.ThrowsException<TokenizationException>(
+                    () => tokenizer.Tokenize(str));
+        }
 
-            Assert.AreEqual(expected, actual);
-        }*/
+        [TestMethod]
+        public void TwoOperatorsInARow_ShouldThrowParsingException()
+        {
+            // Arrange
+            string str       = "12**4";
+            var    helper    = new ShuntingYardHelper(_operators, _symbols);
+            var    tokenizer = new CalculatorTokenizer(helper);
+
+            // Act
+            // Assert
+            Assert.ThrowsException<ParsingException>(() => tokenizer.Tokenize(str));
+        }
     }
 }

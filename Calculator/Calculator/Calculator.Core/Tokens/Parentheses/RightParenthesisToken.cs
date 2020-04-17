@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Calculator.Core.Exceptions;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Calculator.Core.Tokens.Parentheses
 {
@@ -14,7 +16,14 @@ namespace Calculator.Core.Tokens.Parentheses
             {
                 output.Enqueue(operators.Pop());
             }
-            // Getting rid of the left parenthesis
+
+            if (!operators.Any())
+            {
+                throw new ParsingException(
+                    "Expression contains mismatched parentheses");
+            }
+
+            // popping the left parenthesis
             operators.Pop();
         }
     }

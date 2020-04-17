@@ -1,4 +1,5 @@
-﻿using Calculator.Core.Helper;
+﻿using System;
+using Calculator.Core.Helpers;
 using System.Collections.Generic;
 
 namespace Calculator.Core.Tokens.Operators
@@ -12,7 +13,7 @@ namespace Calculator.Core.Tokens.Operators
         protected OperatorToken(char sign,
                              int precedence,
                              OperatorType operatorOperatorType,
-                             bool isLeftAssociative = false)
+                             bool isLeftAssociative = true)
                                 : base(TokenType.Operator, precedence)
         {
             Sign = sign;
@@ -25,11 +26,11 @@ namespace Calculator.Core.Tokens.Operators
         public override void PerformAlgorithmStep(ref Stack<Token> operators,
                                                   ref Queue<Token> output)
         {
-            while (MyHelper.OperatorAtTop(operators))
+            while (ShuntingYardHelper.OperatorAtTop(operators))
             {
                 var op = operators.Peek() as OperatorToken;
 
-                if (MyHelper.ShouldPopOperator(this, op))
+                if (ShuntingYardHelper.ShouldPopOperator(this, op))
                 {
                     output.Enqueue(operators.Pop());
                 }
@@ -40,6 +41,21 @@ namespace Calculator.Core.Tokens.Operators
             }
 
             operators.Push(this);
+        }
+
+        public override bool Equals(Object obj)
+        {
+            if (obj == null)
+                return false;
+
+            OperatorToken other = obj as OperatorToken;
+            if ((Object)other == null)
+                return false;
+
+            // here you need to compare two objects
+            // below is just example implementation
+
+            return this.OperatorType == other.OperatorType;
         }
     }
 }

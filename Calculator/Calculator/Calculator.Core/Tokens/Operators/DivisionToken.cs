@@ -1,6 +1,6 @@
 ﻿namespace Calculator.Core.Tokens.Operators
 {
-    internal class DivisionToken : OperatorToken
+    public class DivisionToken : OperatorToken
     {
         public DivisionToken(char sign = '/') : base(sign, 2, OperatorType.Division)
         {

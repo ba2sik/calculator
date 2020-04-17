@@ -1,7 +1,7 @@
 ﻿using Calculator.Core.Exceptions;
+using Calculator.Core.Helpers;
 using Calculator.Core.Tokens;
 using Calculator.Core.Tokens.Factory;
-using Calculator.Core.Tokens.Operators;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,27 +10,23 @@ namespace Calculator.Core.Tokenizer
 {
     internal class CalculatorTokenizer : ITokenizer
     {
-        private readonly Helper.Helper _helper;
+        private readonly Helper _helper;
 
-        public CalculatorTokenizer(Helper.Helper helper)
+        public CalculatorTokenizer(Helper helper)
         {
             _helper = helper;
         }
 
         public List<Token> Tokenize(string expression)
         {
-            expression = Helper.Helper.RemoveSpaces(expression);
+            expression = Helper.RemoveSpaces(expression);
             var expressionCharacters = expression.ToCharArray();
-            var i                    = 0;
+            var tokens               = new List<Token>();
+            int i                    = 0;
 
             try
             {
-                // The first character in the expression has special rules
-                var firstToken = CreateFirstToken(expressionCharacters[0]);
-                var tokens     = new List<Token> {firstToken};
-
-                // Skipping the first character
-                for (i = 1; i < expressionCharacters.Length; i++)
+                for (i = 0; i < expressionCharacters.Length; i++)
                 {
                     HandleCharacter(expressionCharacters[i], tokens);
                 }
@@ -39,35 +35,12 @@ namespace Calculator.Core.Tokenizer
             }
             catch (InvalidOperationException e)
             {
-                throw new IllegalOperationException(i, e.Message);
+                throw new TokenizationException(i, e.Message);
             }
             catch (KeyNotFoundException e)
             {
                 throw new UnknownOperatorException(i, e.Message);
             }
-            catch (ArgumentException e)
-            {
-                throw new ParsingException(i, e.Message);
-            }
-        }
-
-        private Token CreateFirstToken(char c)
-        {
-            if (!_helper.IsFirstCharacterValid(c))
-            {
-                if (_helper.IsOperator(c))
-                {
-                    throw new InvalidOperationException($"The operator {c} is in illegal place.");
-                }
-
-                throw new KeyNotFoundException(c.ToString());
-            }
-
-            var type = _helper.IsParentheses(c)
-                           ? GetParenthesisTokenType(c)
-                           : TokenType.Number;
-
-            return TokenFactory.Create(type, c);
         }
 
         private void HandleCharacter(char ch, List<Token> tokens)
@@ -80,7 +53,7 @@ namespace Calculator.Core.Tokenizer
             {
                 HandleDecimalSeparator(tokens);
             }
-            else if (Helper.Helper.IsDigit(ch))
+            else if (Helper.IsDigit(ch))
             {
                 HandleDigit(ch, tokens);
             }
@@ -100,8 +73,8 @@ namespace Calculator.Core.Tokenizer
 
         private void HandleHyphen(ICollection<Token> tokens)
         {
-            var token = _helper.IsHyphenMeansNegative(tokens.Last())
-                            ? TokenFactory.Create(TokenType.Number, _helper.hyphen)
+            var token = _helper.IsMinusUnary(tokens)
+                            ? TokenFactory.Create(TokenType.Number, _helper.symbols.hyphen)
                             : TokenFactory.Create(OperatorType.Subtraction);
 
             tokens.Add(token);
@@ -109,19 +82,18 @@ namespace Calculator.Core.Tokenizer
 
         private void HandleDecimalSeparator(IReadOnlyCollection<Token> tokens)
         {
-            if (GetLastTokenType(tokens) != TokenType.Number)
+            if (!tokens.Any() || !(tokens.Last() is NumberToken))
             {
-                throw new InvalidOperationException("Decimal separator is in bad place.");
+                throw new InvalidOperationException(
+                        "Decimal separator is in bad place.");
             }
 
-            ConcatToLastToken(_helper.decimalSeparator, tokens);
+            ConcatToLastToken(_helper.symbols.decimalSeparator, tokens);
         }
 
         private void HandleDigit(char digit, ICollection<Token> tokens)
         {
-            var lastToken = tokens.Last();
-
-            if (lastToken is NumberToken)
+            if (tokens.Any() && tokens.Last() is NumberToken)
             {
                 ConcatToLastToken(digit, tokens);
             }
@@ -137,16 +109,8 @@ namespace Calculator.Core.Tokenizer
             tokens.Add(TokenFactory.Create(type));
         }
 
-        private void HandleOperator(char op, List<Token> tokens)
+        private void HandleOperator(char op, ICollection<Token> tokens)
         {
-            var lastToken = tokens.Last();
-
-            if (lastToken is OperatorToken)
-            {
-                throw new
-                    InvalidOperationException("You can't put two operators in a row (except minus)");
-            }
-
             OperatorType type = _helper.OperatorsDict[op];
             tokens.Add(TokenFactory.Create(type));
         }
@@ -155,11 +119,6 @@ namespace Calculator.Core.Tokenizer
         private static void ConcatToLastToken(char c, IEnumerable<Token> tokens)
         {
             (tokens.Last() as NumberToken).ConcatCharacter(c);
-        }
-
-        private static TokenType GetLastTokenType(IEnumerable<Token> tokens)
-        {
-            return tokens.Last().Type;
         }
 
         private TokenType GetParenthesisTokenType(char c)

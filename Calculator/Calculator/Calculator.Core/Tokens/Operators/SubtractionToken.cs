@@ -1,6 +1,6 @@
 ﻿namespace Calculator.Core.Tokens.Operators
 {
-    internal class SubtractionToken : OperatorToken
+    public class SubtractionToken : OperatorToken
     {
         public SubtractionToken(char sign = '-') : base(sign, 1, OperatorType.Subtraction)
         {

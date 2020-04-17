@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Calculator.Core.Tokens
 {
@@ -16,6 +17,11 @@ namespace Calculator.Core.Tokens
             return double.Parse(_value);
         }
 
+        public bool IsHyphen()
+        {
+            return _value.Length == 1 && !char.IsDigit(_value[0]);
+        }
+
         public void ConcatCharacter(char c)
         {
             _value += c.ToString();
@@ -24,6 +30,21 @@ namespace Calculator.Core.Tokens
         public override void PerformAlgorithmStep(ref Stack<Token> operators, ref Queue<Token> output)
         {
             output.Enqueue(this);
+        }
+
+        public override bool Equals(Object obj)
+        {
+            if (obj == null)
+                return false;
+
+            NumberToken other = obj as NumberToken;
+            if ((Object)other == null)
+                return false;
+
+            // here you need to compare two objects
+            // below is just example implementation
+
+            return this._value == other._value;
         }
     }
 }
