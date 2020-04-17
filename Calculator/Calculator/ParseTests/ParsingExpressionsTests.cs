@@ -269,16 +269,27 @@ namespace ParseTests
         }
 
         [TestMethod]
-        public void TwoOperatorsInARow_ShouldThrowParsingException()
+        public void TwoOperatorsInARow_ShouldThrowIllegalOperationException()
         {
             // Arrange
             string str       = "12**4";
-            var    helper    = new ShuntingYardHelper(_operators, _symbols);
-            var    tokenizer = new CalculatorTokenizer(helper);
+            ShuntingYardParser parser = new ShuntingYardParser(_operators);
 
             // Act
             // Assert
-            Assert.ThrowsException<ParsingException>(() => tokenizer.Tokenize(str));
+            Assert.ThrowsException<IllegalOperationException>(() => parser.Parse(str));
+        }
+
+        [TestMethod]
+        public void EndsWithOperator_ShouldThrowIllegalOperationException()
+        {
+            // Arrange
+            string             str    = "12*4+";
+            ShuntingYardParser parser = new ShuntingYardParser(_operators);
+
+            // Act
+            // Assert
+            Assert.ThrowsException<IllegalOperationException>(() => parser.Parse(str));
         }
     }
 }

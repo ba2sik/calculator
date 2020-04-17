@@ -155,8 +155,8 @@ namespace Calculator.Core.Parser
             {
                 if (tokens[i] is OperatorToken && tokens[i + 1] is OperatorToken)
                 {
-                    throw new
-                        InvalidOperationException("Expression cannot contain two consecutive operators (except minus)");
+                    throw new IllegalOperationException(
+                        "Expression cannot contain two consecutive operators (except minus)");
                 }
             }
         }
