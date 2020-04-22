@@ -33,7 +33,7 @@ namespace Calculator.Core.Parser
             return result;
         }
 
-        public Queue<Token> GetPostfixNotation(IEnumerable<Token> tokens)
+        public Queue<Token> GetPostfixNotation(IEnumerable<Token> tokens) //CR: naming, Get at the start implies it is just a fetch operation, but it also performs logic
         {
             var operators = new Stack<Token>();
             var output    = new Queue<Token>();
@@ -111,17 +111,28 @@ namespace Calculator.Core.Parser
             return tokenToPush;
         }
 
-        private void ValidateTokens(List<Token> tokens)
+
+//CR: since there are many kinds of validations you can perform (and they will get numerous if you'd try to support more complicated calculations),
+// you should definitely consider extracting the validation process to its own separate class, have a validator.
+
+//CR: design: having to validate your expression after doing part of the work has its downsides, 
+//for example you have to do some kind of validation in the tokenzing process or else it would just break, and never reach the validation point, which is weird.
+        private void ValidateTokens(List<Token> tokens) 
         {
             ValidateExpressionSides(tokens);
             ValidateOperatorsOrder(tokens);
             ConvertUnaryMinusesToSubtraction(tokens);
         }
 
+        //CR: comment not needed
         // Check first and last tokens validity
         private void ValidateExpressionSides(IReadOnlyCollection<Token> tokens)
         {
-            if (!_helper.IsFirstTokenValid(tokens.First()))
+            //CR: this is where the helper gets weird, here it is responsible for validation operations 
+            // (which might not have a reason to be outside the validation class if you do end up going for it like i mentioned in the comment above)
+            // but the helper also performs char and string operations for tokenizing in the tokenizer. 
+            // it causes code to "spil" over to different parts and makes it so your helper class has no identity, it just "does things" for everyone. It may lead to it being bloated with random bits of code.
+            if (!_helper.IsFirstTokenValid(tokens.First())) 
             {
                 throw new
                     IllegalOperationException("Expression cannot start with an operator/right parenthesis");

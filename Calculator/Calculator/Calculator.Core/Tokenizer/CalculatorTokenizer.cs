@@ -21,7 +21,7 @@ namespace Calculator.Core.Tokenizer
         {
             expression = Helper.RemoveSpaces(expression);
             var expressionCharacters = expression.ToCharArray();
-            var tokens               = new List<Token>();
+            var tokens               = new List<Token>(); //CR: formatting?
             int i                    = 0;
 
             try
@@ -82,7 +82,7 @@ namespace Calculator.Core.Tokenizer
 
         private void HandleDecimalSeparator(IReadOnlyCollection<Token> tokens)
         {
-            if (!tokens.Any() || !(tokens.Last() is NumberToken))
+            if (!tokens.Any() || !(tokens.Last() is NumberToken)) //CR: this is validation, see the comments in the parser
             {
                 throw new InvalidOperationException(
                         "Decimal separator is in bad place.");
