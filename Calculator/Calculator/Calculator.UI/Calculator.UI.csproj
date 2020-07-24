@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{885BFBFC-54F9-4D46-9BCB-F233DC5D426D}</ProjectGuid>
+    <ProjectGuid>{50B16730-3F95-4D71-A332-E930EBAAF5C0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Calculator.UI</RootNamespace>
@@ -41,9 +41,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Abstraction\IDisplay.cs" />
-    <Compile Include="Implementation\ConsoleDisplay.cs" />
+    <Compile Include="Display\IDisplay.cs" />
+    <Compile Include="Display\ConsoleDisplay.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
